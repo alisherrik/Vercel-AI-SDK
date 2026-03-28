@@ -1,0 +1,210 @@
+﻿2026-03-28T04:36:49.7464039Z ##[group]Run anthropics/claude-code-action@v1
+2026-03-28T04:36:49.7465449Z with:
+2026-03-28T04:36:49.7467479Z   anthropic_api_key: ***
+2026-03-28T04:36:49.7468339Z   trigger_phrase: @claude
+2026-03-28T04:36:49.7469185Z   label_trigger: claude
+2026-03-28T04:36:49.7470011Z   branch_prefix: claude/
+2026-03-28T04:36:49.7470831Z   use_bedrock: false
+2026-03-28T04:36:49.7471822Z   use_vertex: false
+2026-03-28T04:36:49.7472603Z   use_foundry: false
+2026-03-28T04:36:49.7473405Z   use_sticky_comment: false
+2026-03-28T04:36:49.7474296Z   classify_inline_comments: true
+2026-03-28T04:36:49.7475210Z   use_commit_signing: false
+2026-03-28T04:36:49.7476060Z   bot_id: 41898282
+2026-03-28T04:36:49.7476809Z   bot_name: claude[bot]
+2026-03-28T04:36:49.7477635Z   track_progress: false
+2026-03-28T04:36:49.7478445Z   include_fix_links: true
+2026-03-28T04:36:49.7479279Z   display_report: false
+2026-03-28T04:36:49.7480092Z   show_full_output: false
+2026-03-28T04:36:49.7481203Z ##[endgroup]
+2026-03-28T04:36:49.7685924Z ##[group]Run oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3
+2026-03-28T04:36:49.7687264Z with:
+2026-03-28T04:36:49.7687929Z   bun-version: 1.3.6
+2026-03-28T04:36:49.7688935Z   token: ***
+2026-03-28T04:36:49.7689635Z   no-cache: false
+2026-03-28T04:36:49.7690350Z ##[endgroup]
+2026-03-28T04:36:50.5007331Z Downloading a new version of Bun: https://github.com/oven-sh/bun/releases/download/bun-v1.3.6/bun-linux-x64.zip
+2026-03-28T04:36:51.0015213Z [command]/usr/bin/unzip -o -q /home/runner/work/_temp/41b0754f-f3bd-4eca-8609-1e8224f86f3a.zip
+2026-03-28T04:36:51.7196994Z [command]/home/runner/.bun/bin/bun --revision
+2026-03-28T04:36:51.7235540Z 1.3.6+d530ed993
+2026-03-28T04:36:51.7430671Z ##[group]Run cd ${GITHUB_ACTION_PATH}
+2026-03-28T04:36:51.7431049Z [36;1mcd ${GITHUB_ACTION_PATH}[0m
+2026-03-28T04:36:51.7431339Z [36;1mbun install --production[0m
+2026-03-28T04:36:51.7464476Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-03-28T04:36:51.7465115Z ##[endgroup]
+2026-03-28T04:36:51.7555088Z bun install v1.3.6 (d530ed99)
+2026-03-28T04:36:52.2461258Z 
+2026-03-28T04:36:52.2461864Z + @actions/core@1.11.1
+2026-03-28T04:36:52.2462362Z + @actions/github@6.0.1
+2026-03-28T04:36:52.2462777Z + @anthropic-ai/claude-agent-sdk@0.2.86
+2026-03-28T04:36:52.2463244Z + @modelcontextprotocol/sdk@1.16.0
+2026-03-28T04:36:52.2463664Z + @octokit/graphql@8.2.2
+2026-03-28T04:36:52.2464051Z + @octokit/rest@21.1.1
+2026-03-28T04:36:52.2464475Z + @octokit/webhooks-types@7.6.1
+2026-03-28T04:36:52.2464858Z + node-fetch@3.3.2
+2026-03-28T04:36:52.2465175Z + shell-quote@1.8.3
+2026-03-28T04:36:52.2465467Z + zod@3.25.76
+2026-03-28T04:36:52.2465648Z 
+2026-03-28T04:36:52.2465820Z 163 packages installed [491.00ms]
+2026-03-28T04:36:52.2737593Z ##[group]Run bun run ${GITHUB_ACTION_PATH}/src/entrypoints/run.ts
+2026-03-28T04:36:52.2738069Z [36;1mbun run ${GITHUB_ACTION_PATH}/src/entrypoints/run.ts[0m
+2026-03-28T04:36:52.2764088Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-03-28T04:36:52.2764429Z env:
+2026-03-28T04:36:52.2764602Z   MODE: 
+2026-03-28T04:36:52.2764770Z   PROMPT: 
+2026-03-28T04:36:52.2764944Z   TRIGGER_PHRASE: @claude
+2026-03-28T04:36:52.2765160Z   ASSIGNEE_TRIGGER: 
+2026-03-28T04:36:52.2765351Z   LABEL_TRIGGER: claude
+2026-03-28T04:36:52.2765565Z   BASE_BRANCH: 
+2026-03-28T04:36:52.2765753Z   BRANCH_PREFIX: claude/
+2026-03-28T04:36:52.2765970Z   BRANCH_NAME_TEMPLATE: 
+2026-03-28T04:36:52.2766176Z   OVERRIDE_GITHUB_TOKEN: 
+2026-03-28T04:36:52.2766395Z   ALLOWED_BOTS: 
+2026-03-28T04:36:52.2766580Z   ALLOWED_NON_WRITE_USERS: 
+2026-03-28T04:36:52.2766796Z   CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: 
+2026-03-28T04:36:52.2767043Z   INCLUDE_COMMENTS_BY_ACTOR: 
+2026-03-28T04:36:52.2767267Z   EXCLUDE_COMMENTS_BY_ACTOR: 
+2026-03-28T04:36:52.2767474Z   GITHUB_RUN_ID: 23677599794
+2026-03-28T04:36:52.2767686Z   USE_STICKY_COMMENT: false
+2026-03-28T04:36:52.2767897Z   CLASSIFY_INLINE_COMMENTS: true
+2026-03-28T04:36:52.2768406Z   DEFAULT_WORKFLOW_TOKEN: ***
+2026-03-28T04:36:52.2768735Z   USE_COMMIT_SIGNING: false
+2026-03-28T04:36:52.2769187Z   SSH_SIGNING_KEY: 
+2026-03-28T04:36:52.2769363Z   BOT_ID: 41898282
+2026-03-28T04:36:52.2769544Z   BOT_NAME: claude[bot]
+2026-03-28T04:36:52.2769739Z   TRACK_PROGRESS: false
+2026-03-28T04:36:52.2769936Z   INCLUDE_FIX_LINKS: true
+2026-03-28T04:36:52.2770151Z   ADDITIONAL_PERMISSIONS: 
+2026-03-28T04:36:52.2770353Z   CLAUDE_ARGS: 
+2026-03-28T04:36:52.2773850Z   ALL_INPUTS: {
+  "anthropic_api_key": "***",
+  "trigger_phrase": "@claude",
+  "assignee_trigger": "",
+  "label_trigger": "claude",
+  "base_branch": "",
+  "branch_prefix": "claude/",
+  "branch_name_template": "",
+  "allowed_bots": "",
+  "allowed_non_write_users": "",
+  "include_comments_by_actor": "",
+  "exclude_comments_by_actor": "",
+  "prompt": "",
+  "settings": "",
+  "claude_code_oauth_token": "",
+  "github_token": "",
+  "use_bedrock": "false",
+  "use_vertex": "false",
+  "use_foundry": "false",
+  "claude_args": "",
+  "additional_permissions": "",
+  "use_sticky_comment": "false",
+  "classify_inline_comments": "true",
+  "use_commit_signing": "false",
+  "ssh_signing_key": "",
+  "bot_id": "41898282",
+  "bot_name": "claude[bot]",
+  "track_progress": "false",
+  "include_fix_links": "true",
+  "path_to_claude_code_executable": "",
+  "path_to_bun_executable": "",
+  "display_report": "false",
+  "show_full_output": "false",
+  "plugins": "",
+  "plugin_marketplaces": ""
+}
+2026-03-28T04:36:52.2776995Z   INPUT_PROMPT_FILE: /home/runner/work/_temp/claude-prompts/claude-prompt.txt
+2026-03-28T04:36:52.2777369Z   INPUT_SETTINGS: 
+2026-03-28T04:36:52.2777814Z   INPUT_EXPERIMENTAL_SLASH_COMMANDS_DIR: /home/runner/work/_actions/anthropics/claude-code-action/v1/slash-commands
+2026-03-28T04:36:52.2778333Z   INPUT_PATH_TO_CLAUDE_CODE_EXECUTABLE: 
+2026-03-28T04:36:52.2778594Z   INPUT_PATH_TO_BUN_EXECUTABLE: 
+2026-03-28T04:36:52.2778824Z   INPUT_SHOW_FULL_OUTPUT: false
+2026-03-28T04:36:52.2779050Z   DISPLAY_REPORT: false
+2026-03-28T04:36:52.2779246Z   INPUT_PLUGINS: 
+2026-03-28T04:36:52.2779436Z   INPUT_PLUGIN_MARKETPLACES: 
+2026-03-28T04:36:52.2779827Z   PATH_TO_CLAUDE_CODE_EXECUTABLE: 
+2026-03-28T04:36:52.2780059Z   NODE_VERSION: 
+2026-03-28T04:36:52.2780623Z   ANTHROPIC_API_KEY: ***
+2026-03-28T04:36:52.2780833Z   CLAUDE_CODE_OAUTH_TOKEN: 
+2026-03-28T04:36:52.2781040Z   ANTHROPIC_BASE_URL: 
+2026-03-28T04:36:52.2781241Z   ANTHROPIC_CUSTOM_HEADERS: 
+2026-03-28T04:36:52.2781455Z   CLAUDE_CODE_USE_BEDROCK: 
+2026-03-28T04:36:52.2781796Z   CLAUDE_CODE_USE_VERTEX: 
+2026-03-28T04:36:52.2782004Z   CLAUDE_CODE_USE_FOUNDRY: 
+2026-03-28T04:36:52.2782197Z   AWS_REGION: 
+2026-03-28T04:36:52.2782366Z   AWS_ACCESS_KEY_ID: 
+2026-03-28T04:36:52.2782557Z   AWS_SECRET_ACCESS_KEY: 
+2026-03-28T04:36:52.2782749Z   AWS_SESSION_TOKEN: 
+2026-03-28T04:36:52.2782942Z   AWS_BEARER_TOKEN_BEDROCK: 
+2026-03-28T04:36:52.2783155Z   ANTHROPIC_BEDROCK_BASE_URL: 
+2026-03-28T04:36:52.2783371Z   ANTHROPIC_VERTEX_PROJECT_ID: 
+2026-03-28T04:36:52.2783587Z   CLOUD_ML_REGION: 
+2026-03-28T04:36:52.2783780Z   GOOGLE_APPLICATION_CREDENTIALS: 
+2026-03-28T04:36:52.2784026Z   ANTHROPIC_VERTEX_BASE_URL: 
+2026-03-28T04:36:52.2784255Z   VERTEX_REGION_CLAUDE_3_5_HAIKU: 
+2026-03-28T04:36:52.2784482Z   VERTEX_REGION_CLAUDE_3_5_SONNET: 
+2026-03-28T04:36:52.2784715Z   VERTEX_REGION_CLAUDE_3_7_SONNET: 
+2026-03-28T04:36:52.2784945Z   ANTHROPIC_FOUNDRY_RESOURCE: 
+2026-03-28T04:36:52.2785156Z   ANTHROPIC_FOUNDRY_BASE_URL: 
+2026-03-28T04:36:52.2785377Z   ANTHROPIC_DEFAULT_SONNET_MODEL: 
+2026-03-28T04:36:52.2785604Z   ANTHROPIC_DEFAULT_HAIKU_MODEL: 
+2026-03-28T04:36:52.2785836Z   ANTHROPIC_DEFAULT_OPUS_MODEL: 
+2026-03-28T04:36:52.2786065Z   CLAUDE_CODE_ENABLE_TELEMETRY: 
+2026-03-28T04:36:52.2786284Z   OTEL_METRICS_EXPORTER: 
+2026-03-28T04:36:52.2786491Z   OTEL_LOGS_EXPORTER: 
+2026-03-28T04:36:52.2786684Z   OTEL_EXPORTER_OTLP_PROTOCOL: 
+2026-03-28T04:36:52.2786912Z   OTEL_EXPORTER_OTLP_ENDPOINT: 
+2026-03-28T04:36:52.2787133Z   OTEL_EXPORTER_OTLP_HEADERS: 
+2026-03-28T04:36:52.2787346Z   OTEL_METRIC_EXPORT_INTERVAL: 
+2026-03-28T04:36:52.2787569Z   OTEL_LOGS_EXPORT_INTERVAL: 
+2026-03-28T04:36:52.2787791Z   OTEL_RESOURCE_ATTRIBUTES: 
+2026-03-28T04:36:52.2788129Z ##[endgroup]
+2026-03-28T04:36:52.4539967Z Comment contains exact trigger phrase '@claude'
+2026-03-28T04:36:52.4540741Z Auto-detected mode: tag for event: issue_comment
+2026-03-28T04:36:52.4541343Z Requesting OIDC token...
+2026-03-28T04:36:52.4543000Z Attempt 1 of 3...
+2026-03-28T04:36:52.6976829Z OIDC token successfully obtained
+2026-03-28T04:36:52.6977384Z Exchanging OIDC token for app token...
+2026-03-28T04:36:52.6977853Z Attempt 1 of 3...
+2026-03-28T04:36:52.9867055Z App token exchange failed: 401 Unauthorized - Claude Code is not installed on this repository. Please install the Claude Code GitHub App at https://github.com/apps/claude
+2026-03-28T04:36:52.9868635Z Attempt 1 failed: Claude Code is not installed on this repository. Please install the Claude Code GitHub App at https://github.com/apps/claude
+2026-03-28T04:36:52.9869399Z Retrying in 5 seconds...
+2026-03-28T04:36:57.9877984Z Attempt 2 of 3...
+2026-03-28T04:36:58.2357737Z App token exchange failed: 401 Unauthorized - Claude Code is not installed on this repository. Please install the Claude Code GitHub App at https://github.com/apps/claude
+2026-03-28T04:36:58.2360018Z Retrying in 10 seconds...
+2026-03-28T04:36:58.2363748Z Attempt 2 failed: Claude Code is not installed on this repository. Please install the Claude Code GitHub App at https://github.com/apps/claude
+2026-03-28T04:37:08.2369286Z Attempt 3 of 3...
+2026-03-28T04:37:08.4924898Z App token exchange failed: 401 Unauthorized - Claude Code is not installed on this repository. Please install the Claude Code GitHub App at https://github.com/apps/claude
+2026-03-28T04:37:08.4927525Z Attempt 3 failed: Claude Code is not installed on this repository. Please install the Claude Code GitHub App at https://github.com/apps/claude
+2026-03-28T04:37:08.4928904Z Operation failed after 3 attempts
+2026-03-28T04:37:08.4953221Z ##[error]Action failed with error: Claude Code is not installed on this repository. Please install the Claude Code GitHub App at https://github.com/apps/claude
+2026-03-28T04:37:08.4991343Z ##[error]Process completed with exit code 1.
+2026-03-28T04:37:08.5042741Z ##[group]Run bun run ${GITHUB_ACTION_PATH}/src/entrypoints/post-buffered-inline-comments.ts
+2026-03-28T04:37:08.5043503Z [36;1mbun run ${GITHUB_ACTION_PATH}/src/entrypoints/post-buffered-inline-comments.ts[0m
+2026-03-28T04:37:08.5069445Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-03-28T04:37:08.5069757Z env:
+2026-03-28T04:37:08.5070110Z   GITHUB_TOKEN: ***
+2026-03-28T04:37:08.5070318Z   REPO_OWNER: alishers-company
+2026-03-28T04:37:08.5070567Z   REPO_NAME: claude-launch-pad-20260328
+2026-03-28T04:37:08.5070805Z   PR_NUMBER: 1
+2026-03-28T04:37:08.5071372Z   ANTHROPIC_API_KEY: ***
+2026-03-28T04:37:08.5071855Z ##[endgroup]
+2026-03-28T04:37:08.5422089Z No buffered inline comments
+2026-03-28T04:37:08.5475941Z ##[group]Run curl -L \
+2026-03-28T04:37:08.5476181Z [36;1mcurl -L \[0m
+2026-03-28T04:37:08.5476374Z [36;1m  -X DELETE \[0m
+2026-03-28T04:37:08.5476644Z [36;1m  -H "Accept: application/vnd.github+json" \[0m
+2026-03-28T04:37:08.5476971Z [36;1m  -H "Authorization: Bearer " \[0m
+2026-03-28T04:37:08.5477265Z [36;1m  -H "X-GitHub-Api-Version: 2022-11-28" \[0m
+2026-03-28T04:37:08.5477642Z [36;1m  ${GITHUB_API_URL:-https://api.github.com}/installation/token[0m
+2026-03-28T04:37:08.5503650Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-03-28T04:37:08.5503977Z ##[endgroup]
+2026-03-28T04:37:08.5596660Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-03-28T04:37:08.5597330Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-03-28T04:37:08.5597698Z 
+2026-03-28T04:37:08.6937069Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-03-28T04:37:08.6937720Z {
+2026-03-28T04:37:08.6937988Z   "message": "Bad credentials",
+2026-03-28T04:37:08.6938459Z   "documentation_url": "https://docs.github.com/rest",
+2026-03-28T04:37:08.6938954Z   "status": "401"
+2026-03-28T04:37:08.6939371Z 100   112    0   112    0     0    835      0 --:--:-- --:--:-- --:--:--   842
+2026-03-28T04:37:08.6960045Z }

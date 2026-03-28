@@ -8,7 +8,8 @@ import { extractJsonMiddleware, wrapLanguageModel } from "ai";
 
 type SupportedProvider = "gateway" | "openai" | "openrouter";
 
-export function getPlannerModel(): LanguageModelV3 {
+export function getPlannerModel(options?: { jsonExtraction?: boolean }): LanguageModelV3 {
+  const jsonExtraction = options?.jsonExtraction ?? true;
   const provider = resolveProvider();
 
   if (provider === "openai") {
@@ -25,18 +26,16 @@ export function getPlannerModel(): LanguageModelV3 {
     const openai = createOpenAI({
       apiKey,
       baseURL: process.env.OPENAI_BASE_URL?.trim() || undefined,
-      ...(isGroq ? { compatibility: "compatible" } : {}),
+      ...(isGroq ? { name: "groq" } : {}),
     });
 
     const modelId = process.env.AI_MODEL?.trim() || "gpt-4.1-mini";
 
     if (isGroq) {
-      return withJsonExtraction(
-        openai.chat(modelId),
-      );
+      return maybeWrapJsonExtraction(openai.chat(modelId), jsonExtraction);
     }
 
-    return withJsonExtraction(openai(modelId));
+    return maybeWrapJsonExtraction(openai(modelId), jsonExtraction);
   }
 
   if (provider === "openrouter") {
@@ -68,8 +67,9 @@ export function getPlannerModel(): LanguageModelV3 {
       headers,
     });
 
-    return withJsonExtraction(
+    return maybeWrapJsonExtraction(
       openrouter.chat(process.env.AI_MODEL?.trim() || "openrouter/free"),
+      jsonExtraction,
     );
   }
 
@@ -85,8 +85,9 @@ export function getPlannerModel(): LanguageModelV3 {
     apiKey: gatewayApiKey,
   });
 
-  return withJsonExtraction(
+  return maybeWrapJsonExtraction(
     gateway(process.env.AI_MODEL?.trim() || "openai/gpt-5.4-mini"),
+    jsonExtraction,
   );
 }
 
@@ -126,3 +127,11 @@ function withJsonExtraction(model: LanguageModelV3): LanguageModelV3 {
     middleware: extractJsonMiddleware(),
   });
 }
+
+function maybeWrapJsonExtraction(
+  model: LanguageModelV3,
+  jsonExtraction: boolean,
+): LanguageModelV3 {
+  return jsonExtraction ? withJsonExtraction(model) : model;
+}
+

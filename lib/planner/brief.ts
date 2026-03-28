@@ -92,6 +92,7 @@ export function createInitialSession(): PlannerSession {
   return {
     brief: createEmptyBrief(),
     artifact: null,
+    buildRunId: null,
     questionCount: 0,
     messages: [
       createChatMessage(

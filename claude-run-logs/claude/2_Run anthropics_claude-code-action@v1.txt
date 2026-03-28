@@ -1,0 +1,266 @@
+﻿2026-03-28T04:30:38.5909529Z ##[group]Run anthropics/claude-code-action@v1
+2026-03-28T04:30:38.5910566Z with:
+2026-03-28T04:30:38.5911380Z   anthropic_api_key: ***
+2026-03-28T04:30:38.5911708Z   trigger_phrase: @claude
+2026-03-28T04:30:38.5912018Z   label_trigger: claude
+2026-03-28T04:30:38.5912321Z   branch_prefix: claude/
+2026-03-28T04:30:38.5912625Z   use_bedrock: false
+2026-03-28T04:30:38.5912899Z   use_vertex: false
+2026-03-28T04:30:38.5913171Z   use_foundry: false
+2026-03-28T04:30:38.5913452Z   use_sticky_comment: false
+2026-03-28T04:30:38.5913774Z   classify_inline_comments: true
+2026-03-28T04:30:38.5914101Z   use_commit_signing: false
+2026-03-28T04:30:38.5914389Z   bot_id: 41898282
+2026-03-28T04:30:38.5914688Z   bot_name: claude[bot]
+2026-03-28T04:30:38.5914973Z   track_progress: false
+2026-03-28T04:30:38.5915267Z   include_fix_links: true
+2026-03-28T04:30:38.5915566Z   display_report: false
+2026-03-28T04:30:38.5915854Z   show_full_output: false
+2026-03-28T04:30:38.5916390Z ##[endgroup]
+2026-03-28T04:30:38.6074488Z ##[group]Run oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3
+2026-03-28T04:30:38.6075089Z with:
+2026-03-28T04:30:38.6075384Z   bun-version: 1.3.6
+2026-03-28T04:30:38.6075884Z   token: ***
+2026-03-28T04:30:38.6076180Z   no-cache: false
+2026-03-28T04:30:38.6076477Z ##[endgroup]
+2026-03-28T04:30:39.3046962Z Downloading a new version of Bun: https://github.com/oven-sh/bun/releases/download/bun-v1.3.6/bun-linux-x64.zip
+2026-03-28T04:30:39.6534960Z [command]/usr/bin/unzip -o -q /home/runner/work/_temp/b32dde6a-84ba-4c0f-8da0-c926c185f3b3.zip
+2026-03-28T04:30:40.3718592Z [command]/home/runner/.bun/bin/bun --revision
+2026-03-28T04:30:40.3763962Z 1.3.6+d530ed993
+2026-03-28T04:30:40.3996867Z ##[group]Run cd ${GITHUB_ACTION_PATH}
+2026-03-28T04:30:40.3997282Z [36;1mcd ${GITHUB_ACTION_PATH}[0m
+2026-03-28T04:30:40.3997598Z [36;1mbun install --production[0m
+2026-03-28T04:30:40.4031279Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-03-28T04:30:40.4031992Z ##[endgroup]
+2026-03-28T04:30:40.4129440Z bun install v1.3.6 (d530ed99)
+2026-03-28T04:30:40.9841918Z 
+2026-03-28T04:30:40.9842471Z + @actions/core@1.11.1
+2026-03-28T04:30:40.9842995Z + @actions/github@6.0.1
+2026-03-28T04:30:40.9843440Z + @anthropic-ai/claude-agent-sdk@0.2.86
+2026-03-28T04:30:40.9843945Z + @modelcontextprotocol/sdk@1.16.0
+2026-03-28T04:30:40.9844387Z + @octokit/graphql@8.2.2
+2026-03-28T04:30:40.9844735Z + @octokit/rest@21.1.1
+2026-03-28T04:30:40.9845157Z + @octokit/webhooks-types@7.6.1
+2026-03-28T04:30:40.9845542Z + node-fetch@3.3.2
+2026-03-28T04:30:40.9845857Z + shell-quote@1.8.3
+2026-03-28T04:30:40.9846186Z + zod@3.25.76
+2026-03-28T04:30:40.9846360Z 
+2026-03-28T04:30:40.9846554Z 163 packages installed [572.00ms]
+2026-03-28T04:30:41.0062576Z ##[group]Run bun run ${GITHUB_ACTION_PATH}/src/entrypoints/run.ts
+2026-03-28T04:30:41.0063068Z [36;1mbun run ${GITHUB_ACTION_PATH}/src/entrypoints/run.ts[0m
+2026-03-28T04:30:41.0091109Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-03-28T04:30:41.0091466Z env:
+2026-03-28T04:30:41.0091641Z   MODE: 
+2026-03-28T04:30:41.0091801Z   PROMPT: 
+2026-03-28T04:30:41.0091979Z   TRIGGER_PHRASE: @claude
+2026-03-28T04:30:41.0092207Z   ASSIGNEE_TRIGGER: 
+2026-03-28T04:30:41.0092409Z   LABEL_TRIGGER: claude
+2026-03-28T04:30:41.0092619Z   BASE_BRANCH: 
+2026-03-28T04:30:41.0092796Z   BRANCH_PREFIX: claude/
+2026-03-28T04:30:41.0093015Z   BRANCH_NAME_TEMPLATE: 
+2026-03-28T04:30:41.0093219Z   OVERRIDE_GITHUB_TOKEN: 
+2026-03-28T04:30:41.0093419Z   ALLOWED_BOTS: 
+2026-03-28T04:30:41.0093604Z   ALLOWED_NON_WRITE_USERS: 
+2026-03-28T04:30:41.0093821Z   CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: 
+2026-03-28T04:30:41.0094088Z   INCLUDE_COMMENTS_BY_ACTOR: 
+2026-03-28T04:30:41.0094319Z   EXCLUDE_COMMENTS_BY_ACTOR: 
+2026-03-28T04:30:41.0094533Z   GITHUB_RUN_ID: 23677498652
+2026-03-28T04:30:41.0094775Z   USE_STICKY_COMMENT: false
+2026-03-28T04:30:41.0094998Z   CLASSIFY_INLINE_COMMENTS: true
+2026-03-28T04:30:41.0095520Z   DEFAULT_WORKFLOW_TOKEN: ***
+2026-03-28T04:30:41.0095857Z   USE_COMMIT_SIGNING: false
+2026-03-28T04:30:41.0096309Z   SSH_SIGNING_KEY: 
+2026-03-28T04:30:41.0096488Z   BOT_ID: 41898282
+2026-03-28T04:30:41.0096672Z   BOT_NAME: claude[bot]
+2026-03-28T04:30:41.0096871Z   TRACK_PROGRESS: false
+2026-03-28T04:30:41.0097074Z   INCLUDE_FIX_LINKS: true
+2026-03-28T04:30:41.0097305Z   ADDITIONAL_PERMISSIONS: 
+2026-03-28T04:30:41.0097518Z   CLAUDE_ARGS: 
+2026-03-28T04:30:41.0101436Z   ALL_INPUTS: {
+  "anthropic_api_key": "***",
+  "trigger_phrase": "@claude",
+  "assignee_trigger": "",
+  "label_trigger": "claude",
+  "base_branch": "",
+  "branch_prefix": "claude/",
+  "branch_name_template": "",
+  "allowed_bots": "",
+  "allowed_non_write_users": "",
+  "include_comments_by_actor": "",
+  "exclude_comments_by_actor": "",
+  "prompt": "",
+  "settings": "",
+  "claude_code_oauth_token": "",
+  "github_token": "",
+  "use_bedrock": "false",
+  "use_vertex": "false",
+  "use_foundry": "false",
+  "claude_args": "",
+  "additional_permissions": "",
+  "use_sticky_comment": "false",
+  "classify_inline_comments": "true",
+  "use_commit_signing": "false",
+  "ssh_signing_key": "",
+  "bot_id": "41898282",
+  "bot_name": "claude[bot]",
+  "track_progress": "false",
+  "include_fix_links": "true",
+  "path_to_claude_code_executable": "",
+  "path_to_bun_executable": "",
+  "display_report": "false",
+  "show_full_output": "false",
+  "plugins": "",
+  "plugin_marketplaces": ""
+}
+2026-03-28T04:30:41.0104898Z   INPUT_PROMPT_FILE: /home/runner/work/_temp/claude-prompts/claude-prompt.txt
+2026-03-28T04:30:41.0105301Z   INPUT_SETTINGS: 
+2026-03-28T04:30:41.0105778Z   INPUT_EXPERIMENTAL_SLASH_COMMANDS_DIR: /home/runner/work/_actions/anthropics/claude-code-action/v1/slash-commands
+2026-03-28T04:30:41.0106340Z   INPUT_PATH_TO_CLAUDE_CODE_EXECUTABLE: 
+2026-03-28T04:30:41.0106618Z   INPUT_PATH_TO_BUN_EXECUTABLE: 
+2026-03-28T04:30:41.0106859Z   INPUT_SHOW_FULL_OUTPUT: false
+2026-03-28T04:30:41.0107100Z   DISPLAY_REPORT: false
+2026-03-28T04:30:41.0107306Z   INPUT_PLUGINS: 
+2026-03-28T04:30:41.0107501Z   INPUT_PLUGIN_MARKETPLACES: 
+2026-03-28T04:30:41.0107924Z   PATH_TO_CLAUDE_CODE_EXECUTABLE: 
+2026-03-28T04:30:41.0108171Z   NODE_VERSION: 
+2026-03-28T04:30:41.0108732Z   ANTHROPIC_API_KEY: ***
+2026-03-28T04:30:41.0108952Z   CLAUDE_CODE_OAUTH_TOKEN: 
+2026-03-28T04:30:41.0109156Z   ANTHROPIC_BASE_URL: 
+2026-03-28T04:30:41.0109360Z   ANTHROPIC_CUSTOM_HEADERS: 
+2026-03-28T04:30:41.0109578Z   CLAUDE_CODE_USE_BEDROCK: 
+2026-03-28T04:30:41.0109976Z   CLAUDE_CODE_USE_VERTEX: 
+2026-03-28T04:30:41.0110246Z   CLAUDE_CODE_USE_FOUNDRY: 
+2026-03-28T04:30:41.0110460Z   AWS_REGION: 
+2026-03-28T04:30:41.0110630Z   AWS_ACCESS_KEY_ID: 
+2026-03-28T04:30:41.0110823Z   AWS_SECRET_ACCESS_KEY: 
+2026-03-28T04:30:41.0111016Z   AWS_SESSION_TOKEN: 
+2026-03-28T04:30:41.0111221Z   AWS_BEARER_TOKEN_BEDROCK: 
+2026-03-28T04:30:41.0111441Z   ANTHROPIC_BEDROCK_BASE_URL: 
+2026-03-28T04:30:41.0111660Z   ANTHROPIC_VERTEX_PROJECT_ID: 
+2026-03-28T04:30:41.0111877Z   CLOUD_ML_REGION: 
+2026-03-28T04:30:41.0112071Z   GOOGLE_APPLICATION_CREDENTIALS: 
+2026-03-28T04:30:41.0112317Z   ANTHROPIC_VERTEX_BASE_URL: 
+2026-03-28T04:30:41.0112547Z   VERTEX_REGION_CLAUDE_3_5_HAIKU: 
+2026-03-28T04:30:41.0112774Z   VERTEX_REGION_CLAUDE_3_5_SONNET: 
+2026-03-28T04:30:41.0113012Z   VERTEX_REGION_CLAUDE_3_7_SONNET: 
+2026-03-28T04:30:41.0113244Z   ANTHROPIC_FOUNDRY_RESOURCE: 
+2026-03-28T04:30:41.0113457Z   ANTHROPIC_FOUNDRY_BASE_URL: 
+2026-03-28T04:30:41.0113682Z   ANTHROPIC_DEFAULT_SONNET_MODEL: 
+2026-03-28T04:30:41.0113911Z   ANTHROPIC_DEFAULT_HAIKU_MODEL: 
+2026-03-28T04:30:41.0114145Z   ANTHROPIC_DEFAULT_OPUS_MODEL: 
+2026-03-28T04:30:41.0114373Z   CLAUDE_CODE_ENABLE_TELEMETRY: 
+2026-03-28T04:30:41.0114588Z   OTEL_METRICS_EXPORTER: 
+2026-03-28T04:30:41.0114792Z   OTEL_LOGS_EXPORTER: 
+2026-03-28T04:30:41.0114988Z   OTEL_EXPORTER_OTLP_PROTOCOL: 
+2026-03-28T04:30:41.0115213Z   OTEL_EXPORTER_OTLP_ENDPOINT: 
+2026-03-28T04:30:41.0115434Z   OTEL_EXPORTER_OTLP_HEADERS: 
+2026-03-28T04:30:41.0115644Z   OTEL_METRIC_EXPORT_INTERVAL: 
+2026-03-28T04:30:41.0115864Z   OTEL_LOGS_EXPORT_INTERVAL: 
+2026-03-28T04:30:41.0116085Z   OTEL_RESOURCE_ATTRIBUTES: 
+2026-03-28T04:30:41.0116451Z ##[endgroup]
+2026-03-28T04:30:41.1988435Z Comment contains exact trigger phrase '@claude'
+2026-03-28T04:30:41.1989300Z Auto-detected mode: tag for event: issue_comment
+2026-03-28T04:30:41.1990143Z Requesting OIDC token...
+2026-03-28T04:30:41.1991530Z Attempt 1 of 3...
+2026-03-28T04:30:41.2001395Z Failed to get OIDC token: 66 |                 const id_token = yield OidcClient.getCall(id_token_url);
+2026-03-28T04:30:41.2002819Z 67 |                 (0, core_1.setSecret)(id_token);
+2026-03-28T04:30:41.2003661Z 68 |                 return id_token;
+2026-03-28T04:30:41.2004342Z 69 |             }
+2026-03-28T04:30:41.2004895Z 70 |             catch (error) {
+2026-03-28T04:30:41.2005859Z 71 |                 throw new Error(`Error message: ${error.message}`);
+2026-03-28T04:30:41.2006769Z                                ^
+2026-03-28T04:30:41.2007844Z error: Error message: Unable to get ACTIONS_ID_TOKEN_REQUEST_URL env variable
+2026-03-28T04:30:41.2010490Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/oidc-utils.js:71:27)
+2026-03-28T04:30:41.2013330Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/oidc-utils.js:8:71)
+2026-03-28T04:30:41.2015079Z       at new Promise (1:11)
+2026-03-28T04:30:41.2016530Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/oidc-utils.js:4:12)
+2026-03-28T04:30:41.2018982Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/core.js:319:46)
+2026-03-28T04:30:41.2021531Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/core.js:31:71)
+2026-03-28T04:30:41.2022582Z       at new Promise (1:11)
+2026-03-28T04:30:41.2023498Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/core.js:27:12)
+2026-03-28T04:30:41.2025369Z       at getOidcToken (/home/runner/work/_actions/anthropics/claude-code-action/v1/src/github/token.ts:15:34)
+2026-03-28T04:30:41.2026751Z       at getOidcToken (/home/runner/work/_actions/anthropics/claude-code-action/v1/src/github/token.ts:13:28)
+2026-03-28T04:30:41.2027556Z 
+2026-03-28T04:30:41.2028275Z Attempt 1 failed: Could not fetch an OIDC token. Did you remember to add `id-token: write` to your workflow permissions?
+2026-03-28T04:30:41.2029285Z Retrying in 5 seconds...
+2026-03-28T04:30:46.2016211Z Attempt 2 of 3...
+2026-03-28T04:30:46.2017925Z Failed to get OIDC token: 66 |                 const id_token = yield OidcClient.getCall(id_token_url);
+2026-03-28T04:30:46.2018965Z 67 |                 (0, core_1.setSecret)(id_token);
+2026-03-28T04:30:46.2019550Z 68 |                 return id_token;
+2026-03-28T04:30:46.2020221Z 69 |             }
+2026-03-28T04:30:46.2020510Z 70 |             catch (error) {
+2026-03-28T04:30:46.2020937Z 71 |                 throw new Error(`Error message: ${error.message}`);
+2026-03-28T04:30:46.2021376Z                                ^
+2026-03-28T04:30:46.2021843Z error: Error message: Unable to get ACTIONS_ID_TOKEN_REQUEST_URL env variable
+2026-03-28T04:30:46.2022828Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/oidc-utils.js:71:27)
+2026-03-28T04:30:46.2024086Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/oidc-utils.js:8:71)
+2026-03-28T04:30:46.2024890Z       at new Promise (1:11)
+2026-03-28T04:30:46.2025626Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/oidc-utils.js:4:12)
+2026-03-28T04:30:46.2026874Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/core.js:319:46)
+2026-03-28T04:30:46.2028197Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/core.js:31:71)
+2026-03-28T04:30:46.2029323Z       at new Promise (1:11)
+2026-03-28T04:30:46.2030334Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/core.js:27:12)
+2026-03-28T04:30:46.2031454Z       at getOidcToken (/home/runner/work/_actions/anthropics/claude-code-action/v1/src/github/token.ts:15:34)
+2026-03-28T04:30:46.2032521Z       at getOidcToken (/home/runner/work/_actions/anthropics/claude-code-action/v1/src/github/token.ts:13:28)
+2026-03-28T04:30:46.2033605Z       at async setupGitHubToken (/home/runner/work/_actions/anthropics/claude-code-action/v1/src/github/token.ts:138:27)
+2026-03-28T04:30:46.2034678Z       at async run (/home/runner/work/_actions/anthropics/claude-code-action/v1/src/entrypoints/run.ts:157:27)
+2026-03-28T04:30:46.2035267Z 
+2026-03-28T04:30:46.2035612Z Attempt 2 failed: Could not fetch an OIDC token. Did you remember to add `id-token: write` to your workflow permissions?
+2026-03-28T04:30:46.2036144Z Retrying in 10 seconds...
+2026-03-28T04:30:56.2023756Z Attempt 3 of 3...
+2026-03-28T04:30:56.2025096Z Failed to get OIDC token: 66 |                 const id_token = yield OidcClient.getCall(id_token_url);
+2026-03-28T04:30:56.2026580Z 67 |                 (0, core_1.setSecret)(id_token);
+2026-03-28T04:30:56.2027528Z 68 |                 return id_token;
+2026-03-28T04:30:56.2028342Z 69 |             }
+2026-03-28T04:30:56.2029014Z 70 |             catch (error) {
+2026-03-28T04:30:56.2030299Z 71 |                 throw new Error(`Error message: ${error.message}`);
+2026-03-28T04:30:56.2031393Z                                ^
+2026-03-28T04:30:56.2032548Z error: Error message: Unable to get ACTIONS_ID_TOKEN_REQUEST_URL env variable
+2026-03-28T04:30:56.2034238Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/oidc-utils.js:71:27)
+2026-03-28T04:30:56.2036477Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/oidc-utils.js:8:71)
+2026-03-28T04:30:56.2038660Z       at new Promise (1:11)
+2026-03-28T04:30:56.2040238Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/oidc-utils.js:4:12)
+2026-03-28T04:30:56.2042529Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/core.js:319:46)
+2026-03-28T04:30:56.2044236Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/core.js:31:71)
+2026-03-28T04:30:56.2045289Z       at new Promise (1:11)
+2026-03-28T04:30:56.2046179Z       at <anonymous> (/home/runner/work/_actions/anthropics/claude-code-action/v1/node_modules/@actions/core/lib/core.js:27:12)
+2026-03-28T04:30:56.2048059Z       at getOidcToken (/home/runner/work/_actions/anthropics/claude-code-action/v1/src/github/token.ts:15:34)
+2026-03-28T04:30:56.2048929Z       at getOidcToken (/home/runner/work/_actions/anthropics/claude-code-action/v1/src/github/token.ts:13:28)
+2026-03-28T04:30:56.2050183Z       at async setupGitHubToken (/home/runner/work/_actions/anthropics/claude-code-action/v1/src/github/token.ts:138:27)
+2026-03-28T04:30:56.2051105Z       at async run (/home/runner/work/_actions/anthropics/claude-code-action/v1/src/entrypoints/run.ts:157:27)
+2026-03-28T04:30:56.2051590Z 
+2026-03-28T04:30:56.2051994Z Attempt 3 failed: Could not fetch an OIDC token. Did you remember to add `id-token: write` to your workflow permissions?
+2026-03-28T04:30:56.2052627Z Operation failed after 3 attempts
+2026-03-28T04:30:56.2071057Z ##[error]Action failed with error: Could not fetch an OIDC token. Did you remember to add `id-token: write` to your workflow permissions?
+2026-03-28T04:30:56.2099174Z ##[error]Process completed with exit code 1.
+2026-03-28T04:30:56.2152002Z ##[group]Run bun run ${GITHUB_ACTION_PATH}/src/entrypoints/post-buffered-inline-comments.ts
+2026-03-28T04:30:56.2152755Z [36;1mbun run ${GITHUB_ACTION_PATH}/src/entrypoints/post-buffered-inline-comments.ts[0m
+2026-03-28T04:30:56.2178934Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-03-28T04:30:56.2179340Z env:
+2026-03-28T04:30:56.2179759Z   GITHUB_TOKEN: ***
+2026-03-28T04:30:56.2180184Z   REPO_OWNER: alishers-company
+2026-03-28T04:30:56.2180493Z   REPO_NAME: claude-launch-pad-20260328
+2026-03-28T04:30:56.2180815Z   PR_NUMBER: 1
+2026-03-28T04:30:56.2181582Z   ANTHROPIC_API_KEY: ***
+2026-03-28T04:30:56.2181835Z ##[endgroup]
+2026-03-28T04:30:56.2542733Z No buffered inline comments
+2026-03-28T04:30:56.2601772Z ##[group]Run curl -L \
+2026-03-28T04:30:56.2602046Z [36;1mcurl -L \[0m
+2026-03-28T04:30:56.2602266Z [36;1m  -X DELETE \[0m
+2026-03-28T04:30:56.2602547Z [36;1m  -H "Accept: application/vnd.github+json" \[0m
+2026-03-28T04:30:56.2602904Z [36;1m  -H "Authorization: Bearer " \[0m
+2026-03-28T04:30:56.2603238Z [36;1m  -H "X-GitHub-Api-Version: 2022-11-28" \[0m
+2026-03-28T04:30:56.2603672Z [36;1m  ${GITHUB_API_URL:-https://api.github.com}/installation/token[0m
+2026-03-28T04:30:56.2630962Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-03-28T04:30:56.2631380Z ##[endgroup]
+2026-03-28T04:30:56.2729576Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-03-28T04:30:56.2730614Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-03-28T04:30:56.2731019Z 
+2026-03-28T04:30:56.3381651Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-03-28T04:30:56.4073861Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-03-28T04:30:56.4074967Z 100   112    0   112    0     0    832      0 --:--:-- --:--:-- --:--:--   829
+2026-03-28T04:30:56.4077833Z {
+2026-03-28T04:30:56.4078304Z   "message": "Bad credentials",
+2026-03-28T04:30:56.4079125Z   "documentation_url": "https://docs.github.com/rest",
+2026-03-28T04:30:56.4080126Z   "status": "401"
+2026-03-28T04:30:56.4108180Z }

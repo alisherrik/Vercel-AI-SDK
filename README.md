@@ -80,8 +80,74 @@ AI_GATEWAY_API_KEY=your_key_here
 - Maintains a normalized `ProjectBrief` while the chat continues
 - Uses `POST /api/planner/turn` for structured follow-up questions
 - Uses `POST /api/planner/generate` for the final markdown artifact
+- Uses `POST /api/build-runs` plus related status routes for repo/build orchestration
 - Persists the active session in `sessionStorage`
 - Renders the markdown inline with `Copy` and `Download .md` actions
+- Can launch a planner-to-production build run that creates an `AppSpec`, starter files, fixed issue backlog, and a GitHub Pages deployment record
+- Can provision a GitHub repo from a template, open implementation issues, trigger Claude on each issue, merge resulting PRs automatically, and wait for GitHub Pages
+
+## Orchestrator Configuration
+
+By default the build-run flow uses local fake adapters so you can test the full UI without touching GitHub.
+
+To enable real GitHub integration, set:
+
+```bash
+GITHUB_OWNER=your-org-or-user
+GITHUB_OWNER_TYPE=org
+GITHUB_TOKEN=your_token
+```
+
+Optional overrides:
+
+```bash
+GITHUB_API_URL=https://api.github.com
+GITHUB_AGENT_PROVIDER=claude
+GITHUB_REPO_PRIVATE=false
+GITHUB_TEMPLATE_OWNER=your-org-or-user
+GITHUB_TEMPLATE_REPO=your-template-repo
+GITHUB_PR_MERGE_METHOD=squash
+GITHUB_ISSUE_LABELS=plan-pilot,copilot-agent
+GITHUB_COPILOT_ASSIGNEE=copilot-swe-agent[bot]
+GITHUB_COPILOT_APP_SLUG=copilot-swe-agent
+GITHUB_COPILOT_BYPASS_ACTOR_ID=
+GITHUB_COPILOT_MODEL=
+GITHUB_COPILOT_INSTRUCTIONS=
+ANTHROPIC_API_KEY=your_key_here
+```
+
+The real agent flow now supports two modes:
+
+- `GITHUB_AGENT_PROVIDER=claude`
+  The generated repo receives a Claude GitHub Actions workflow plus `ANTHROPIC_API_KEY`, each issue gets an automated `@claude` kickoff comment, the orchestrator waits for Claude's PR, then merges it after checks pass.
+- `GITHUB_AGENT_PROVIDER=copilot`
+  Each generated issue is created with `assignees: ["copilot-swe-agent[bot]"]`, `agent_assignment.target_repo`, `agent_assignment.base_branch`, and optional custom instructions/model.
+
+If `GITHUB_TEMPLATE_REPO` is configured, the repo is created from that GitHub template before the generated starter app and automation files are pushed.
+
+When a new generated repository is provisioned, the orchestrator also attempts to:
+
+- enable repository auto-merge
+- delete branches after merge
+- keep squash merge enabled
+- configure GitHub Actions workflow permissions for PR automation
+- add Copilot integration to repository ruleset bypass lists when the ruleset lives on the repository itself
+
+If a blocking ruleset comes from a parent source, the orchestrator now reports that explicitly. In that case the bypass must be configured at the owner level, not inside the generated repository.
+
+### Planner Model Stays Separate
+
+If you want the planner to keep using its current provider, keep the planner env vars as-is:
+
+```bash
+AI_PROVIDER=...
+AI_MODEL=...
+```
+
+This app does not reuse the planner provider for GitHub issue automation. They are intentionally separate concerns:
+
+- planner uses `AI_PROVIDER` / `AI_MODEL`
+- GitHub automation uses either Claude (`ANTHROPIC_API_KEY`) or Copilot (`GITHUB_AGENT_PROVIDER=copilot`)
 
 ## Verification
 

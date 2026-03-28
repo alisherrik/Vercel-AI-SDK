@@ -45,7 +45,18 @@ export async function POST(request: Request) {
       maxRetries: 2,
     });
 
-    const parsed = plannerTurnModelSchema.parse(JSON.parse(result.text));
+    const rawParsed = JSON.parse(result.text) as {
+      message?: unknown;
+      suggestions?: unknown;
+      briefDelta?: unknown;
+      missingFields?: unknown;
+      readyToGenerate?: unknown;
+    };
+
+    const parsed = plannerTurnModelSchema.parse({
+      ...rawParsed,
+      suggestions: normalizeSuggestions(rawParsed.suggestions),
+    });
 
     const mergedBrief = mergeProjectBrief(body.brief, parsed.briefDelta);
     const missingFields = getMissingFields(mergedBrief);
@@ -83,4 +94,38 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
+}
+
+function normalizeSuggestions(input: unknown) {
+  const parsedSuggestions = z
+    .array(
+      z.object({
+        label: z.string().trim().min(1).max(60),
+        value: z.string().trim().min(1).max(240),
+      }),
+    )
+    .safeParse(input);
+
+  const suggestions = parsedSuggestions.success ? parsedSuggestions.data : [];
+  const deduped = suggestions.filter(
+    (suggestion, index, items) =>
+      items.findIndex((item) => item.label === suggestion.label) === index,
+  );
+
+  const fallbacks = [
+    {
+      label: "Show example",
+      value: "Show me a concrete example so I can answer faster.",
+    },
+    {
+      label: "I prefer simple",
+      value: "Keep it simple for day one and use the most practical default.",
+    },
+    {
+      label: "Ask in Uzbek",
+      value: "Please continue in Uzbek and keep the options short.",
+    },
+  ];
+
+  return [...deduped, ...fallbacks].slice(0, 3);
 }

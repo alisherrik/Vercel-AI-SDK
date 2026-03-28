@@ -257,3 +257,62 @@ textarea {
   background-size: 200% 100%;
   animation: plan-shimmer 3s ease-in-out infinite;
 }
+
+/* Build run panel */
+.build-run-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #9f8f7d;
+}
+
+.build-run-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+  padding: 0.35rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6f5e4d;
+}
+
+.build-run-timeline-step {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 0.75rem;
+}
+
+.build-run-step-dot {
+  margin-top: 0.25rem;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 9999px;
+  background: rgba(177, 100, 55, 0.22);
+  flex: none;
+}
+
+.build-run-timeline-step[data-active="true"] .build-run-step-dot {
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(177, 100, 55, 0.12);
+}
+
+.build-run-timeline-step[data-complete="true"] .build-run-step-dot {
+  background: #245e43;
+}
+
+.build-run-issue {
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.build-run-issue:hover {
+  transform: translateY(-1px);
+  border-color: rgba(177, 100, 55, 0.22);
+}

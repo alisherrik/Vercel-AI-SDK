@@ -1,0 +1,34 @@
+﻿2026-03-28T04:36:47.6168681Z Current runner version: '2.333.0'
+2026-03-28T04:36:47.6192999Z ##[group]Runner Image Provisioner
+2026-03-28T04:36:47.6193849Z Hosted Compute Agent
+2026-03-28T04:36:47.6194506Z Version: 20260213.493
+2026-03-28T04:36:47.6195093Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-03-28T04:36:47.6195808Z Build Date: 2026-02-13T00:28:41Z
+2026-03-28T04:36:47.6196555Z Worker ID: {57ef94c3-0bce-4c83-845c-d4f20827a480}
+2026-03-28T04:36:47.6197239Z Azure Region: westus
+2026-03-28T04:36:47.6197797Z ##[endgroup]
+2026-03-28T04:36:47.6199453Z ##[group]Operating System
+2026-03-28T04:36:47.6200096Z Ubuntu
+2026-03-28T04:36:47.6200568Z 24.04.4
+2026-03-28T04:36:47.6201033Z LTS
+2026-03-28T04:36:47.6201794Z ##[endgroup]
+2026-03-28T04:36:47.6202396Z ##[group]Runner Image
+2026-03-28T04:36:47.6202978Z Image: ubuntu-24.04
+2026-03-28T04:36:47.6203520Z Version: 20260323.65.1
+2026-03-28T04:36:47.6204504Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260323.65/images/ubuntu/Ubuntu2404-Readme.md
+2026-03-28T04:36:47.6206215Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260323.65
+2026-03-28T04:36:47.6207115Z ##[endgroup]
+2026-03-28T04:36:47.6208335Z ##[group]GITHUB_TOKEN Permissions
+2026-03-28T04:36:47.6210120Z Contents: write
+2026-03-28T04:36:47.6210799Z Issues: write
+2026-03-28T04:36:47.6211292Z Metadata: read
+2026-03-28T04:36:47.6212043Z PullRequests: write
+2026-03-28T04:36:47.6212621Z ##[endgroup]
+2026-03-28T04:36:47.6214668Z Secret source: Actions
+2026-03-28T04:36:47.6215402Z Prepare workflow directory
+2026-03-28T04:36:47.6536957Z Prepare all required actions
+2026-03-28T04:36:47.6574186Z Getting action download info
+2026-03-28T04:36:48.0853012Z Download action repository 'anthropics/claude-code-action@v1' (SHA:e7b588b6eaa5263c2e7c6c7b34a29e190d32ee68)
+2026-03-28T04:36:48.8165998Z Getting action download info
+2026-03-28T04:36:48.9862401Z Download action repository 'oven-sh/setup-bun@3d267786b128fe76c2f16a390aa2448b815359f3' (SHA:3d267786b128fe76c2f16a390aa2448b815359f3)
+2026-03-28T04:36:49.5989483Z Complete job name: claude

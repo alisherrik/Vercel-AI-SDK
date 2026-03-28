@@ -14,9 +14,9 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Plan Generation Chat",
+  title: "Plan Pilot Orchestrator",
   description:
-    "Interview founders, shape the app idea, and export a markdown handoff for vibe-coding tools.",
+    "Interview founders, generate a build-ready plan, and promote it to a GitHub Pages production run.",
 };
 
 export default function RootLayout({

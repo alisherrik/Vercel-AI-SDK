@@ -1,0 +1,383 @@
+{
+  "runs": [
+    {
+      "id": "run-4e4bc16b-bdf1-4e03-8b6a-7eaa166e45b9",
+      "createdAt": "2026-03-28T07:54:41.702Z",
+      "updatedAt": "2026-03-28T07:54:41.711Z",
+      "status": "queued",
+      "plannerTitle": "Invoice Sprint",
+      "summary": "",
+      "appSpec": {
+        "appName": "Invoice Sprint",
+        "starterKind": "dashboard",
+        "pages": [
+          "Home",
+          "Dashboard",
+          "Invoice builder",
+          "Metrics"
+        ],
+        "sections": [
+          "Hero",
+          "Invoice creation",
+          "Reminder automation",
+          "Who it is for",
+          "Integrations",
+          "Primary call to action"
+        ],
+        "theme": {
+          "headline": "Operational clarity with sharp contrast",
+          "background": "#f3f6fb",
+          "surface": "#ffffff",
+          "accent": "#2563eb",
+          "text": "#0f172a"
+        },
+        "copyTone": "Warm editorial minimalism",
+        "features": [
+          "Invoice creation",
+          "Reminder automation",
+          "Dashboard",
+          "Invoice builder",
+          "Stripe",
+          "Responsive layout"
+        ],
+        "assetsNeeded": [
+          "Wordmark",
+          "Metric cards"
+        ],
+        "githubPagesConstraints": [
+          "No server runtime",
+          "Static HTML, CSS, and JavaScript only",
+          "Relative asset paths only",
+          "Deploy via GitHub Pages workflow"
+        ],
+        "issueInputs": {
+          "primaryGoal": "Help freelancers send invoices faster.",
+          "audience": [
+            "Freelancers"
+          ],
+          "coreScreens": [
+            "Dashboard",
+            "Invoice builder"
+          ],
+          "interactions": [
+            "Primary CTA flow",
+            "Dashboard interactions",
+            "Invoice builder interactions",
+            "Mobile navigation"
+          ]
+        },
+        "briefContext": {
+          "mainProblem": "Manual invoicing takes too much time.",
+          "dataAndAuthNeeds": [
+            "Email login"
+          ],
+          "integrations": [
+            "Stripe"
+          ],
+          "visualStyleDirection": [
+            "Warm editorial minimalism"
+          ],
+          "targetUsers": [
+            "Freelancers"
+          ],
+          "platformExpectations": [
+            "Responsive web app"
+          ]
+        }
+      },
+      "generatedApp": {
+        "name": "Invoice Sprint",
+        "starterKind": "dashboard",
+        "files": [
+          {
+            "path": "index.html",
+            "content": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Invoice Sprint</title>\n    <meta\n      id=\"meta-description\"\n      name=\"description\"\n      content=\"Help freelancers send invoices faster.\"\n    />\n    <link rel=\"stylesheet\" href=\"./styles.css\" />\n  </head>\n  <body data-starter=\"dashboard\">\n    <div class=\"dash-shell\" data-testid=\"site-shell\">\n      <aside class=\"dash-sidebar\">\n        <div class=\"sidebar-brand\">\n          <div class=\"brand-mark\">I</div>\n          <span class=\"brand-name\">Invoice Sprint</span>\n        </div>\n        <nav class=\"sidebar-nav\" data-testid=\"primary-nav\">\n    <a href=\"#home\" class=\"sidebar-item active\">\n      <span class=\"sidebar-icon\">&#9776;</span>\n      <span>Home</span>\n    </a>\n    <a href=\"#dashboard\" class=\"sidebar-item \">\n      <span class=\"sidebar-icon\">&#9635;</span>\n      <span>Dashboard</span>\n    </a>\n    <a href=\"#invoice-builder\" class=\"sidebar-item \">\n      <span class=\"sidebar-icon\">&#9783;</span>\n      <span>Invoice builder</span>\n    </a>\n    <a href=\"#metrics\" class=\"sidebar-item \">\n      <span class=\"sidebar-icon\">&#9881;</span>\n      <span>Metrics</span>\n    </a></nav>\n        <div class=\"sidebar-footer\">\n          <div class=\"sidebar-user\">\n            <div class=\"user-avatar\">F</div>\n            <div>\n              <p class=\"user-name\">Freelancers</p>\n              <p class=\"user-role\">Admin</p>\n            </div>\n          </div>\n        </div>\n      </aside>\n\n      <div class=\"dash-main\">\n        <header class=\"dash-topbar\">\n          <button class=\"menu-toggle\" data-testid=\"mobile-nav-toggle\" aria-expanded=\"false\"><span></span><span></span><span></span></button>\n          <div>\n            <h1 id=\"page-title\" class=\"dash-page-title\">Dashboard</h1>\n            <p class=\"dash-page-desc\">Help freelancers send invoices faster.</p>\n          </div>\n          <div class=\"dash-topbar-actions\">\n            <button class=\"btn-secondary btn-sm\" type=\"button\" data-testid=\"interactive-demo\">Export</button>\n            <a class=\"btn-primary btn-sm\" href=\"#\" data-testid=\"primary-cta\">+ New</a>\n          </div>\n        </header>\n\n        <main class=\"dash-content\" data-testid=\"hero-section\">\n          <section class=\"metrics-grid\" data-testid=\"feature-grid\">\n      <div class=\"metric-card\">\n        <p class=\"metric-label\">Invoice creation</p>\n        <p class=\"metric-value\">2,847</p>\n        <span class=\"metric-delta positive\">+12.5%</span>\n      </div>\n      <div class=\"metric-card\">\n        <p class=\"metric-label\">Reminder automation</p>\n        <p class=\"metric-value\">94.2%</p>\n        <span class=\"metric-delta positive\">+3.1%</span>\n      </div>\n      <div class=\"metric-card\">\n        <p class=\"metric-label\">Dashboard</p>\n        <p class=\"metric-value\">1,203</p>\n        <span class=\"metric-delta negative\">-2.4%</span>\n      </div>\n      <div class=\"metric-card\">\n        <p class=\"metric-label\">Invoice builder</p>\n        <p class=\"metric-value\">348</p>\n        <span class=\"metric-delta positive\">+18.7%</span>\n      </div></section>\n\n          <div class=\"dash-two-col\">\n            <section class=\"dash-card dash-card-wide\">\n              <div class=\"card-header\">\n                <h3>Overview</h3>\n                <div class=\"card-tabs\">\n                  <button class=\"card-tab active\">Week</button>\n                  <button class=\"card-tab\">Month</button>\n                  <button class=\"card-tab\">Year</button>\n                </div>\n              </div>\n              <div class=\"chart-placeholder\">\n                <svg viewBox=\"0 0 400 120\" class=\"chart-svg\">\n                  <defs><linearGradient id=\"cg\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0%\" stop-color=\"var(--accent)\" stop-opacity=\"0.2\"/><stop offset=\"100%\" stop-color=\"var(--accent)\" stop-opacity=\"0\"/></linearGradient></defs>\n                  <path d=\"M0,100 C40,90 80,60 120,65 C160,70 200,30 240,35 C280,40 320,15 360,20 L400,10 L400,120 L0,120Z\" fill=\"url(#cg)\"/>\n                  <path d=\"M0,100 C40,90 80,60 120,65 C160,70 200,30 240,35 C280,40 320,15 360,20 L400,10\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\" stroke-linecap=\"round\"/>\n                </svg>\n              </div>\n            </section>\n\n            <section class=\"dash-card\">\n              <div class=\"card-header\"><h3>Activity</h3></div>\n              <div class=\"activity-list\">\n                \n                <div class=\"activity-item\">\n                  <span class=\"activity-dot\"></span>\n                  <span>Dashboard updated</span>\n                  <span class=\"activity-time\">1m</span>\n                </div>\n                <div class=\"activity-item\">\n                  <span class=\"activity-dot\"></span>\n                  <span>Invoice builder updated</span>\n                  <span class=\"activity-time\">3m</span>\n                </div>\n                <div class=\"activity-item\"><span class=\"activity-dot\"></span><span>Stripe connected</span></div>\n              </div>\n            </section>\n          </div>\n\n          <section class=\"dash-card\">\n            <div class=\"card-header\"><h3>Recent Items</h3><button class=\"btn-link\">View all</button></div>\n            <table class=\"dash-table\">\n              <thead><tr><th>Name</th><th>Owner</th><th>Status</th><th>Updated</th></tr></thead>\n              <tbody>\n      <tr>\n        <td><span class=\"table-name\">Invoice creation</span></td>\n        <td>Freelancers</td>\n        <td><span class=\"status-badge status-active\">Active</span></td>\n        <td class=\"table-date\">1h ago</td>\n      </tr>\n      <tr>\n        <td><span class=\"table-name\">Reminder automation</span></td>\n        <td>Freelancers</td>\n        <td><span class=\"status-badge status-pending\">Pending</span></td>\n        <td class=\"table-date\">2h ago</td>\n      </tr>\n      <tr>\n        <td><span class=\"table-name\">Dashboard</span></td>\n        <td>Freelancers</td>\n        <td><span class=\"status-badge status-active\">Active</span></td>\n        <td class=\"table-date\">3h ago</td>\n      </tr>\n      <tr>\n        <td><span class=\"table-name\">Invoice builder</span></td>\n        <td>Freelancers</td>\n        <td><span class=\"status-badge status-review\">Review</span></td>\n        <td class=\"table-date\">4h ago</td>\n      </tr>\n      <tr>\n        <td><span class=\"table-name\">Stripe</span></td>\n        <td>Freelancers</td>\n        <td><span class=\"status-badge status-active\">Active</span></td>\n        <td class=\"table-date\">5h ago</td>\n      </tr></tbody>\n            </table>\n          </section>\n        </main>\n      </div>\n    </div>\n    <script src=\"./script.js\"></script>\n  </body>\n</html>"
+          },
+          {
+            "path": "styles.css",
+            "content": ":root {\n  --bg: #f3f6fb;\n  --surface: #ffffff;\n  --accent: #2563eb;\n  --text: #0f172a;\n  --radius: 14px;\n  --radius-lg: 22px;\n  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);\n  --shadow-md: 0 4px 16px rgba(0,0,0,0.06);\n  --shadow-lg: 0 12px 40px rgba(0,0,0,0.08);\n  --muted: color-mix(in srgb, var(--text) 50%, transparent);\n}\n* { box-sizing: border-box; margin: 0; padding: 0; }\nbody {\n  min-height: 100vh; background: var(--bg); color: var(--text);\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n  line-height: 1.6; -webkit-font-smoothing: antialiased;\n}\n.brand-mark {\n  width: 34px; height: 34px; border-radius: 10px; background: var(--accent);\n  color: white; display: flex; align-items: center; justify-content: center;\n  font-weight: 700; font-size: 15px; flex-shrink: 0;\n}\n.brand-mark-sm { width: 26px; height: 26px; font-size: 12px; border-radius: 7px; }\n.brand-name { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }\n.section-label {\n  font-size: 11px; font-weight: 700; letter-spacing: 0.13em;\n  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;\n}\n.section-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 24px; }\n.section-header { margin-bottom: 4px; }\n.btn-primary {\n  display: inline-flex; align-items: center; padding: 11px 24px; border-radius: 10px;\n  background: var(--accent); color: white; font-size: 13px; font-weight: 600;\n  text-decoration: none; border: none; cursor: pointer;\n  transition: all 0.2s; box-shadow: 0 1px 4px color-mix(in srgb, var(--accent) 25%, transparent);\n}\n.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent); }\n.btn-large { padding: 14px 32px; font-size: 15px; border-radius: 12px; }\n.btn-secondary {\n  display: inline-flex; align-items: center; padding: 11px 24px; border-radius: 10px;\n  background: white; color: var(--text); font-size: 13px; font-weight: 600;\n  border: 1px solid rgba(0,0,0,0.1); cursor: pointer; transition: all 0.2s;\n}\n.btn-secondary:hover { border-color: rgba(0,0,0,0.2); transform: translateY(-1px); }\n.btn-sm { padding: 7px 16px; font-size: 12px; border-radius: 8px; }\n.btn-link { background: none; border: none; color: var(--accent); font-size: 13px; font-weight: 600; cursor: pointer; }\n.hero-badge {\n  display: inline-block; padding: 5px 14px; border-radius: 999px;\n  font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;\n  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent);\n  margin-bottom: 20px;\n}\n.menu-toggle {\n  display: none; flex-direction: column; gap: 4px; padding: 8px;\n  background: none; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; cursor: pointer;\n}\n.menu-toggle span { display: block; width: 18px; height: 2px; background: var(--text); border-radius: 2px; }\n.app-footer {\n  margin-top: 40px; padding: 28px 0; border-top: 1px solid rgba(0,0,0,0.06);\n  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;\n}\n.footer-brand { display: flex; align-items: center; gap: 10px; }\n.footer-links { display: flex; gap: 18px; }\n.footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; }\n.footer-links a:hover { color: var(--accent); }\n@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }\n@media (max-width: 860px) {\n  .menu-toggle { display: flex; }\n}\n\n.dash-shell { display: flex; height: 100vh; overflow: hidden; }\n.dash-sidebar {\n  width: 240px; background: var(--surface); border-right: 1px solid rgba(0,0,0,0.06);\n  display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;\n}\n.sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 18px 18px 14px; }\n.sidebar-nav { display: flex; flex-direction: column; gap: 2px; padding: 0 10px; flex: 1; }\n.sidebar-item {\n  display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px;\n  font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; transition: 0.15s;\n}\n.sidebar-item:hover { background: rgba(0,0,0,0.04); color: var(--text); }\n.sidebar-item.active { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); font-weight: 600; }\n.sidebar-icon { font-size: 16px; width: 20px; text-align: center; }\n.sidebar-footer { padding: 14px; border-top: 1px solid rgba(0,0,0,0.06); }\n.sidebar-user { display: flex; align-items: center; gap: 10px; }\n.user-avatar {\n  width: 32px; height: 32px; border-radius: 9px; background: var(--accent);\n  color: white; display: flex; align-items: center; justify-content: center;\n  font-weight: 700; font-size: 13px;\n}\n.user-name { font-size: 13px; font-weight: 600; }\n.user-role { font-size: 11px; color: var(--muted); }\n\n.dash-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--bg); }\n.dash-topbar {\n  display: flex; align-items: center; gap: 16px; padding: 18px 28px;\n  border-bottom: 1px solid rgba(0,0,0,0.06); background: var(--surface);\n  position: sticky; top: 0; z-index: 50;\n}\n.dash-topbar > .menu-toggle { display: none; }\n.dash-page-title { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }\n.dash-page-desc { font-size: 12px; color: var(--muted); }\n.dash-topbar-actions { display: flex; gap: 8px; margin-left: auto; }\n\n.dash-content { padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; }\n\n/* Metrics */\n.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }\n.metric-card {\n  padding: 20px; background: var(--surface); border: 1px solid rgba(0,0,0,0.05);\n  border-radius: var(--radius); transition: 0.2s;\n}\n.metric-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }\n.metric-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }\n.metric-value { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin-bottom: 6px; }\n.metric-delta { font-size: 12px; font-weight: 600; border-radius: 6px; padding: 2px 8px; }\n.metric-delta.positive { background: #dcfce7; color: #166534; }\n.metric-delta.negative { background: #fef2f2; color: #991b1b; }\n\n/* Chart */\n.dash-two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }\n.dash-card {\n  background: var(--surface); border: 1px solid rgba(0,0,0,0.05);\n  border-radius: var(--radius); padding: 20px; overflow: hidden;\n}\n.dash-card-wide { }\n.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }\n.card-header h3 { font-size: 14px; font-weight: 700; }\n.card-tabs { display: flex; gap: 2px; background: #f3f3f3; border-radius: 8px; padding: 2px; }\n.card-tab {\n  padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;\n  border: none; background: transparent; color: var(--muted); cursor: pointer;\n}\n.card-tab.active { background: white; color: var(--text); box-shadow: var(--shadow-sm); }\n.chart-placeholder { width: 100%; }\n.chart-svg { width: 100%; height: auto; }\n\n/* Activity */\n.activity-list { display: flex; flex-direction: column; gap: 12px; }\n.activity-item {\n  display: flex; align-items: center; gap: 10px;\n  font-size: 13px; color: color-mix(in srgb, var(--text) 75%, transparent);\n}\n.activity-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }\n.activity-time { margin-left: auto; font-size: 11px; color: var(--muted); }\n\n/* Table */\n.dash-table { width: 100%; border-collapse: collapse; font-size: 13px; }\n.dash-table th {\n  text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 600;\n  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);\n  border-bottom: 1px solid rgba(0,0,0,0.06);\n}\n.dash-table td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.04); }\n.table-name { font-weight: 600; }\n.table-date { color: var(--muted); font-size: 12px; }\n.status-badge {\n  padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;\n}\n.status-active { background: #dcfce7; color: #166534; }\n.status-pending { background: #fef3c7; color: #92400e; }\n.status-review { background: #dbeafe; color: #1e40af; }\n\n@media (max-width: 860px) {\n  .dash-sidebar { display: none; }\n  .dash-topbar > .menu-toggle { display: flex; }\n  .metrics-grid { grid-template-columns: repeat(2, 1fr); }\n  .dash-two-col { grid-template-columns: 1fr; }\n}\n@media (max-width: 540px) {\n  .metrics-grid { grid-template-columns: 1fr; }\n  .dash-content { padding: 16px; }\n}"
+          },
+          {
+            "path": "script.js",
+            "content": "const menuButton = document.querySelector('[data-testid=\"mobile-nav-toggle\"]');\nconst nav = document.querySelector('[data-testid=\"primary-nav\"]');\nconst demoBtn = document.querySelector('[data-testid=\"interactive-demo\"]');\n\nmenuButton?.addEventListener('click', () => {\n  const expanded = menuButton.getAttribute('aria-expanded') === 'true';\n  menuButton.setAttribute('aria-expanded', String(!expanded));\n  nav?.classList.toggle('is-open');\n  \n  // Toggle sidebar on mobile\n  document.querySelector('.dash-sidebar')?.classList.toggle('sidebar-open');\n});\n\ndemoBtn?.addEventListener('click', () => {\n  demoBtn.textContent = 'Exporting... \\u2713';\n  demoBtn.style.borderColor = 'var(--accent)';\n  demoBtn.style.color = 'var(--accent)';\n  demoBtn.disabled = true;\n});\n\n// Scroll-triggered fade-in\nconst observer = new IntersectionObserver((entries) => {\n  entries.forEach(entry => {\n    if (entry.isIntersecting) {\n      entry.target.style.opacity = '1';\n      entry.target.style.transform = 'translateY(0)';\n    }\n  });\n}, { threshold: 0.1 });\n\ndocument.querySelectorAll('.feature-card, .screen-card, .article-card, .metric-card, .integration-chip').forEach(el => {\n  el.style.opacity = '0';\n  el.style.transform = 'translateY(14px)';\n  el.style.transition = 'opacity 0.45s ease, transform 0.45s ease';\n  observer.observe(el);\n});\n\n// Smooth scrolling\ndocument.querySelectorAll('a[href^=\"#\"]').forEach(link => {\n  link.addEventListener('click', (e) => {\n    const target = document.querySelector(link.getAttribute('href'));\n    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); nav?.classList.remove('is-open'); }\n  });\n});\n\n// Tab click interactivity\ndocument.querySelectorAll('.card-tab, .cat-tab').forEach(tab => {\n  tab.addEventListener('click', () => {\n    tab.parentElement?.querySelectorAll('.card-tab, .cat-tab').forEach(t => t.classList.remove('active'));\n    tab.classList.add('active');\n  });\n});\n\n// Sidebar nav active state\ndocument.querySelectorAll('.sidebar-item').forEach(item => {\n  item.addEventListener('click', (e) => {\n    e.preventDefault();\n    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));\n    item.classList.add('active');\n  });\n});"
+          },
+          {
+            "path": ".nojekyll",
+            "content": "# Keep Pages from invoking Jekyll."
+          },
+          {
+            "path": ".github/workflows/ci.yml",
+            "content": "name: Static CI\n\non:\n  pull_request:\n  push:\n    branches: [\"main\"]\n\npermissions:\n  contents: read\n\njobs:\n  verify-static-app:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Check entrypoints\n        run: |\n          test -f index.html\n          test -f styles.css\n          test -f script.js\n      - name: Check linked assets\n        run: |\n          grep -q 'href=\"./styles.css\"' index.html\n          grep -q 'src=\"./script.js\"' index.html\n          grep -q 'data-testid=\"hero-section\"' index.html"
+          },
+          {
+            "path": ".github/workflows/deploy-pages.yml",
+            "content": "name: Deploy GitHub Pages\n\non:\n  push:\n    branches: [\"main\"]\n  workflow_dispatch:\n\npermissions:\n  contents: read\n  pages: write\n  id-token: write\n\nconcurrency:\n  group: \"pages\"\n  cancel-in-progress: true\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Validate static starter\n        run: |\n          test -f index.html\n          test -f styles.css\n          test -f script.js\n          grep -q 'href=\"./styles.css\"' index.html\n          grep -q 'src=\"./script.js\"' index.html\n      - uses: actions/configure-pages@v5\n        with:\n          enablement: true\n      - uses: actions/upload-pages-artifact@v3\n        with:\n          path: .\n  deploy:\n    needs: build\n    environment:\n      name: github-pages\n      url: ${{ steps.deployment.outputs.page_url }}\n    runs-on: ubuntu-latest\n    steps:\n      - id: deployment\n        uses: actions/deploy-pages@v4"
+          },
+          {
+            "path": ".github/workflows/claude.yml",
+            "content": "name: Claude Code\n\non:\n  issue_comment:\n    types: [created]\n  pull_request_review_comment:\n    types: [created]\n\npermissions:\n  contents: write\n  issues: write\n  pull-requests: write\n  id-token: write\n\njobs:\n  claude:\n    if: contains(github.event.comment.body, '@claude')\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n      - uses: anthropics/claude-code-action@v1\n        with:\n          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}\n          model: claude-haiku-4-20250414\n          max_turns: 3\n          allowed_tools: \"Bash,View,GlobTool,GrepTool,BatchTool,mcp__github\""
+          },
+          {
+            "path": "CLAUDE.md",
+            "content": "# Invoice Sprint\n\nFollow the issue scope exactly.\n\n- Keep the project GitHub Pages compatible.\n- Stay within static HTML, CSS, JavaScript, and repo-level config files.\n- Commit finished work directly to main for this generated repository.\n- Run the listed CI checks when possible before finishing.\n- Do not introduce server runtimes or secrets into the generated site."
+          },
+          {
+            "path": "assets/metrics.json",
+            "content": "[\n  {\n    \"label\": \"Active workflows\",\n    \"value\": \"18\"\n  },\n  {\n    \"label\": \"Weekly conversions\",\n    \"value\": \"42%\"\n  }\n]"
+          }
+        ]
+      },
+      "repo": null,
+      "issues": [
+        {
+          "id": "invoice-sprint-full-build-1",
+          "title": "Build complete Invoice Sprint site",
+          "summary": "Implement the full Invoice Sprint site end-to-end: page structure, navigation, hero, feature sections, all interactions, styling, responsive design, content, and deployment readiness. Focus on help freelancers send invoices faster..",
+          "githubIssueNumber": null,
+          "allowedFiles": [
+            "index.html",
+            "styles.css",
+            "script.js",
+            ".nojekyll",
+            ".github/workflows/ci.yml",
+            ".github/workflows/deploy-pages.yml",
+            ".github/workflows/claude.yml",
+            "CLAUDE.md",
+            "assets/metrics.json"
+          ],
+          "acceptanceCriteria": [
+            "Page structure with Home, Dashboard, Invoice builder, Metrics navigation in a static-friendly shell.",
+            "Hero section reflecting \"Help freelancers send invoices faster.\" with primary CTA above the fold.",
+            "All sections implemented: Hero, Invoice creation, Reminder automation, Who it is for, Integrations, Primary call to action.",
+            "Interactive behaviors: Primary CTA flow, Dashboard interactions, Invoice builder interactions, Mobile navigation.",
+            "Responsive layout from mobile to desktop with touch-friendly controls.",
+            "Polished typography, spacing, hover states, and visual style for Freelancers.",
+            "Copy feels tailored and production-ready, not placeholder wireframe text.",
+            "GitHub Pages compatible — static export, metadata, lint and tests pass."
+          ],
+          "expectedDomTargets": [
+            "site-shell",
+            "primary-nav",
+            "hero-section",
+            "feature-grid",
+            "primary-cta",
+            "mobile-nav-toggle",
+            "interactive-demo",
+            "footer-section"
+          ],
+          "ciChecks": [
+            "npm run lint",
+            "npm test"
+          ],
+          "status": "pending"
+        }
+      ],
+      "issueExecutions": [
+        {
+          "issueId": "invoice-sprint-full-build-1",
+          "status": "pending",
+          "branchName": "",
+          "pullRequestUrl": "",
+          "conversationUrl": "",
+          "log": []
+        }
+      ],
+      "pullRequests": [],
+      "deployment": {
+        "provider": "github-pages",
+        "status": "pending",
+        "url": "",
+        "log": []
+      },
+      "finalArtifactUrls": null,
+      "error": null
+    },
+    {
+      "id": "run-b2ed9708-0df0-4cab-a2f4-4bdbe754c889",
+      "createdAt": "2026-03-28T07:56:04.446Z",
+      "updatedAt": "2026-03-28T07:56:16.529Z",
+      "status": "executing_issues",
+      "plannerTitle": "barbershop app",
+      "summary": "",
+      "appSpec": {
+        "appName": "barbershop app",
+        "starterKind": "landing",
+        "pages": [
+          "Home",
+          "Landing page",
+          "Booking confirmation"
+        ],
+        "sections": [
+          "Hero",
+          "Haircuts",
+          "Shaves",
+          "Trims",
+          "Who it is for",
+          "Primary call to action"
+        ],
+        "theme": {
+          "headline": "Editorial warmth for decisive launches",
+          "background": "#f4efe7",
+          "surface": "#fffaf4",
+          "accent": "#bc5e2c",
+          "text": "#1c1917"
+        },
+        "copyTone": "traditional with warm colors, vintage textures, and classic typography",
+        "features": [
+          "Haircuts",
+          "Shaves",
+          "Trims",
+          "Landing page",
+          "Booking confirmation",
+          "Responsive layout"
+        ],
+        "assetsNeeded": [
+          "Wordmark",
+          "Customer logos"
+        ],
+        "githubPagesConstraints": [
+          "No server runtime",
+          "Static HTML, CSS, and JavaScript only",
+          "Relative asset paths only",
+          "Deploy via GitHub Pages workflow"
+        ],
+        "issueInputs": {
+          "primaryGoal": "For clients to book appointments and view services",
+          "audience": [
+            "clients"
+          ],
+          "coreScreens": [
+            "Landing page",
+            "Booking confirmation"
+          ],
+          "interactions": [
+            "Primary CTA flow",
+            "Landing page interactions",
+            "Booking confirmation interactions",
+            "Mobile navigation"
+          ]
+        },
+        "briefContext": {
+          "mainProblem": "Clients have trouble getting in touch with the barbershop to book or change appointments",
+          "dataAndAuthNeeds": [],
+          "integrations": [],
+          "visualStyleDirection": [
+            "traditional with warm colors, vintage textures, and classic typography"
+          ],
+          "targetUsers": [
+            "clients"
+          ],
+          "platformExpectations": []
+        }
+      },
+      "generatedApp": {
+        "name": "barbershop app",
+        "starterKind": "landing",
+        "files": [
+          {
+            "path": "index.html",
+            "content": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>barbershop app</title>\n    <meta\n      id=\"meta-description\"\n      name=\"description\"\n      content=\"For clients to book appointments and view services\"\n    />\n    <link rel=\"stylesheet\" href=\"./styles.css\" />\n  </head>\n  <body data-starter=\"landing\">\n    <div class=\"app-shell\" data-testid=\"site-shell\">\n      <header class=\"app-header\">\n        <div class=\"header-brand\">\n          <div class=\"brand-mark\">b</div>\n          <span class=\"brand-name\">barbershop app</span>\n        </div>\n        <nav class=\"header-nav\" data-testid=\"primary-nav\"><a href=\"#home\" class=\"nav-link\">Home</a><a href=\"#landing-page\" class=\"nav-link\">Landing page</a><a href=\"#booking-confirmation\" class=\"nav-link\">Booking confirmation</a></nav>\n        <button class=\"menu-toggle\" data-testid=\"mobile-nav-toggle\" aria-expanded=\"false\"><span></span><span></span><span></span></button>\n      </header>\n\n      <main>\n        <section class=\"hero-section\" id=\"home\" data-testid=\"hero-section\">\n          <div class=\"hero-content\">\n            <div class=\"hero-badge\">Product</div>\n            <h1 class=\"hero-title\" id=\"page-title\">barbershop app</h1>\n            <p class=\"hero-subtitle\">For clients to book appointments and view services</p>\n            <div class=\"hero-actions\">\n              <a class=\"btn-primary\" href=\"#features\" data-testid=\"primary-cta\">Get Started</a>\n              <button class=\"btn-secondary\" type=\"button\" data-testid=\"interactive-demo\">See Demo</button>\n            </div>\n          </div>\n          <div class=\"hero-visual\">\n            <div class=\"hero-app-preview\">\n              <div class=\"hero-app-bar\"><span></span><span></span><span></span></div>\n              <div class=\"hero-app-body\">\n                <div class=\"hero-app-sidebar\">\n                  <div class=\"hero-nav-item\">Home</div><div class=\"hero-nav-item\">Landing page</div><div class=\"hero-nav-item\">Booking confirmation</div>\n                </div>\n                <div class=\"hero-app-content\">\n                  <div class=\"wire-block-lg\"></div>\n                  <div class=\"wire-row\"><div class=\"wire-block-sm\"></div><div class=\"wire-block-sm\"></div></div>\n                </div>\n              </div>\n            </div>\n          </div>\n        </section>\n\n        <section class=\"social-proof\" id=\"audience\">\n          <span class=\"audience-label\">Built for</span>\n          <span class=\"audience-tag\">clients</span>\n        </section>\n\n        \n        <section class=\"problem-section\" id=\"problem\">\n          <div class=\"section-label\">The Problem</div>\n          <h2 class=\"problem-text\">Clients have trouble getting in touch with the barbershop to book or change appointments</h2>\n        </section>\n\n        <section class=\"features-section\" id=\"features\" data-testid=\"feature-grid\">\n          <div class=\"section-header\"><div class=\"section-label\">Features</div><h2 class=\"section-title\">Everything you need</h2></div>\n          <div class=\"features-grid\">\n      <div class=\"feature-card\">\n        <span class=\"feature-icon\">&#10024;</span>\n        <h3>Haircuts</h3>\n        <p class=\"feature-desc\">Designed for clients.</p>\n      </div>\n      <div class=\"feature-card\">\n        <span class=\"feature-icon\">&#9889;</span>\n        <h3>Shaves</h3>\n        <p class=\"feature-desc\">Designed for clients.</p>\n      </div>\n      <div class=\"feature-card\">\n        <span class=\"feature-icon\">&#128640;</span>\n        <h3>Trims</h3>\n        <p class=\"feature-desc\">Designed for clients.</p>\n      </div>\n      <div class=\"feature-card\">\n        <span class=\"feature-icon\">&#128161;</span>\n        <h3>Landing page</h3>\n        <p class=\"feature-desc\">Designed for clients.</p>\n      </div>\n      <div class=\"feature-card\">\n        <span class=\"feature-icon\">&#128736;</span>\n        <h3>Booking confirmation</h3>\n        <p class=\"feature-desc\">Designed for clients.</p>\n      </div>\n      <div class=\"feature-card\">\n        <span class=\"feature-icon\">&#127919;</span>\n        <h3>Responsive layout</h3>\n        <p class=\"feature-desc\">Designed for clients.</p>\n      </div></div>\n        </section>\n\n        \n        <section class=\"screens-section\" id=\"screens\">\n          <div class=\"section-header\"><div class=\"section-label\">Screens</div><h2 class=\"section-title\">Key Pages</h2></div>\n          <div class=\"screens-showcase\">\n    <div class=\"screen-card\">\n      <div class=\"screen-preview\">\n        <div class=\"screen-dots\"><span></span><span></span><span></span></div>\n        <div class=\"screen-wireframe\">\n          <div class=\"wire-header\"></div>\n          <div class=\"wire-row\"><div class=\"wire-block-lg\"></div><div class=\"wire-block-sm\"></div></div>\n          <div class=\"wire-row\"><div class=\"wire-block-sm\"></div><div class=\"wire-block-sm\"></div><div class=\"wire-block-sm\"></div></div>\n        </div>\n      </div>\n      <p class=\"screen-name\">Landing page</p>\n    </div>\n    <div class=\"screen-card\">\n      <div class=\"screen-preview\">\n        <div class=\"screen-dots\"><span></span><span></span><span></span></div>\n        <div class=\"screen-wireframe\">\n          <div class=\"wire-header\"></div>\n          <div class=\"wire-row\"><div class=\"wire-block-lg\"></div><div class=\"wire-block-sm\"></div></div>\n          <div class=\"wire-row\"><div class=\"wire-block-sm\"></div><div class=\"wire-block-sm\"></div><div class=\"wire-block-sm\"></div></div>\n        </div>\n      </div>\n      <p class=\"screen-name\">Booking confirmation</p>\n    </div></div>\n        </section>\n\n        \n\n        <section class=\"cta-section\" id=\"primary-cta\">\n          <div class=\"cta-inner\">\n            <h2>Ready to build?</h2>\n            <p>traditional with warm colors, vintage textures, and classic typography</p>\n            <a class=\"btn-primary btn-large\" href=\"#home\">Get Started Free</a>\n          </div>\n        </section>\n      </main>\n\n      <footer class=\"app-footer\" data-testid=\"footer-section\">\n        <div class=\"footer-brand\"><div class=\"brand-mark brand-mark-sm\">b</div><span class=\"brand-name\">barbershop app</span></div>\n        <div class=\"footer-links\"><a href=\"#home\">Home</a><a href=\"#landing-page\">Landing page</a><a href=\"#booking-confirmation\">Booking confirmation</a></div>\n      </footer>\n    </div>\n    <script src=\"./script.js\"></script>\n  </body>\n</html>"
+          },
+          {
+            "path": "styles.css",
+            "content": ":root {\n  --bg: #f4efe7;\n  --surface: #fffaf4;\n  --accent: #bc5e2c;\n  --text: #1c1917;\n  --radius: 14px;\n  --radius-lg: 22px;\n  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);\n  --shadow-md: 0 4px 16px rgba(0,0,0,0.06);\n  --shadow-lg: 0 12px 40px rgba(0,0,0,0.08);\n  --muted: color-mix(in srgb, var(--text) 50%, transparent);\n}\n* { box-sizing: border-box; margin: 0; padding: 0; }\nbody {\n  min-height: 100vh; background: var(--bg); color: var(--text);\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n  line-height: 1.6; -webkit-font-smoothing: antialiased;\n}\n.brand-mark {\n  width: 34px; height: 34px; border-radius: 10px; background: var(--accent);\n  color: white; display: flex; align-items: center; justify-content: center;\n  font-weight: 700; font-size: 15px; flex-shrink: 0;\n}\n.brand-mark-sm { width: 26px; height: 26px; font-size: 12px; border-radius: 7px; }\n.brand-name { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }\n.section-label {\n  font-size: 11px; font-weight: 700; letter-spacing: 0.13em;\n  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;\n}\n.section-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 24px; }\n.section-header { margin-bottom: 4px; }\n.btn-primary {\n  display: inline-flex; align-items: center; padding: 11px 24px; border-radius: 10px;\n  background: var(--accent); color: white; font-size: 13px; font-weight: 600;\n  text-decoration: none; border: none; cursor: pointer;\n  transition: all 0.2s; box-shadow: 0 1px 4px color-mix(in srgb, var(--accent) 25%, transparent);\n}\n.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent); }\n.btn-large { padding: 14px 32px; font-size: 15px; border-radius: 12px; }\n.btn-secondary {\n  display: inline-flex; align-items: center; padding: 11px 24px; border-radius: 10px;\n  background: white; color: var(--text); font-size: 13px; font-weight: 600;\n  border: 1px solid rgba(0,0,0,0.1); cursor: pointer; transition: all 0.2s;\n}\n.btn-secondary:hover { border-color: rgba(0,0,0,0.2); transform: translateY(-1px); }\n.btn-sm { padding: 7px 16px; font-size: 12px; border-radius: 8px; }\n.btn-link { background: none; border: none; color: var(--accent); font-size: 13px; font-weight: 600; cursor: pointer; }\n.hero-badge {\n  display: inline-block; padding: 5px 14px; border-radius: 999px;\n  font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;\n  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent);\n  margin-bottom: 20px;\n}\n.menu-toggle {\n  display: none; flex-direction: column; gap: 4px; padding: 8px;\n  background: none; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; cursor: pointer;\n}\n.menu-toggle span { display: block; width: 18px; height: 2px; background: var(--text); border-radius: 2px; }\n.app-footer {\n  margin-top: 40px; padding: 28px 0; border-top: 1px solid rgba(0,0,0,0.06);\n  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;\n}\n.footer-brand { display: flex; align-items: center; gap: 10px; }\n.footer-links { display: flex; gap: 18px; }\n.footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; }\n.footer-links a:hover { color: var(--accent); }\n@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }\n@media (max-width: 860px) {\n  .menu-toggle { display: flex; }\n}\n\n.app-shell { width: min(1160px, calc(100% - 36px)); margin: 0 auto; padding: 0 0 40px; }\n.app-header {\n  display: flex; align-items: center; justify-content: space-between;\n  padding: 14px 22px; margin: 14px 0;\n  background: rgba(255,255,255,0.72); backdrop-filter: blur(20px) saturate(180%);\n  border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-lg);\n  position: sticky; top: 14px; z-index: 100;\n}\n.header-brand { display: flex; align-items: center; gap: 10px; }\n.header-nav { display: flex; gap: 2px; }\n.nav-link { padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--text); text-decoration: none; transition: 0.15s; }\n.nav-link:hover { background: rgba(0,0,0,0.04); }\n\n/* Hero split */\n.hero-section {\n  display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;\n  margin-top: 8px; padding: 56px 48px; border-radius: var(--radius-lg);\n  background: var(--surface); border: 1px solid rgba(0,0,0,0.06);\n  position: relative; overflow: hidden;\n}\n.hero-section::before {\n  content: \"\"; position: absolute; inset: -50%; width: 200%; height: 200%;\n  background: radial-gradient(ellipse at 70% 30%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 55%);\n  pointer-events: none;\n}\n.hero-section > * { position: relative; z-index: 1; }\n.hero-content { display: flex; flex-direction: column; }\n.hero-title {\n  font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; line-height: 1.08;\n  letter-spacing: -0.04em; margin-bottom: 16px;\n}\n.hero-subtitle { font-size: 1.05rem; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }\n.hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }\n\n/* Mini app preview in hero */\n.hero-visual { display: flex; justify-content: center; }\n.hero-app-preview {\n  width: 100%; max-width: 380px; border-radius: 14px; overflow: hidden;\n  border: 1px solid rgba(0,0,0,0.08); box-shadow: var(--shadow-lg);\n  background: white;\n}\n.hero-app-bar {\n  display: flex; gap: 5px; padding: 10px 14px;\n  background: #f5f5f5; border-bottom: 1px solid rgba(0,0,0,0.06);\n}\n.hero-app-bar span { width: 8px; height: 8px; border-radius: 50%; }\n.hero-app-bar span:nth-child(1) { background: #ff5f57; }\n.hero-app-bar span:nth-child(2) { background: #ffbd2e; }\n.hero-app-bar span:nth-child(3) { background: #28ca42; }\n.hero-app-body { display: flex; min-height: 180px; }\n.hero-app-sidebar {\n  width: 100px; background: #fafafa; border-right: 1px solid rgba(0,0,0,0.05);\n  padding: 10px 8px; display: flex; flex-direction: column; gap: 2px;\n}\n.hero-nav-item {\n  padding: 5px 8px; border-radius: 6px; font-size: 10px; font-weight: 500;\n  color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;\n}\n.hero-nav-item:first-child { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); }\n.hero-app-content { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 10px; }\n.wire-block-lg { height: 50px; border-radius: 8px; background: #f3f3f3; }\n.wire-block-sm { height: 35px; border-radius: 8px; background: #f3f3f3; flex: 1; }\n.wire-row { display: flex; gap: 8px; }\n.wire-header { height: 12px; width: 50%; border-radius: 4px; background: #e8e8e8; }\n\n/* Social proof */\n.social-proof {\n  display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;\n  padding: 20px; margin-top: 12px;\n}\n.audience-label { font-size: 12px; font-weight: 500; color: var(--muted); }\n.audience-tag {\n  padding: 5px 14px; border-radius: 999px; font-size: 12px; font-weight: 500;\n  background: white; border: 1px solid rgba(0,0,0,0.06);\n  color: color-mix(in srgb, var(--text) 70%, transparent);\n}\n\n/* Problem */\n.problem-section {\n  margin-top: 16px; padding: 36px; background: var(--surface);\n  border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-lg);\n}\n.problem-text {\n  font-size: clamp(1.15rem, 2.2vw, 1.6rem); font-weight: 600; line-height: 1.45;\n  letter-spacing: -0.02em; color: color-mix(in srgb, var(--text) 85%, var(--accent));\n}\n\n/* Features */\n.features-section {\n  margin-top: 16px; padding: 36px; background: var(--surface);\n  border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-lg);\n}\n.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }\n.feature-card {\n  padding: 22px; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.04);\n  border-radius: var(--radius); transition: 0.25s; animation: fadeUp 0.4s ease backwards;\n}\n.feature-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: color-mix(in srgb, var(--accent) 18%, transparent); }\n.feature-icon {\n  display: inline-flex; align-items: center; justify-content: center;\n  width: 38px; height: 38px; border-radius: 10px;\n  background: color-mix(in srgb, var(--accent) 10%, transparent);\n  font-size: 18px; margin-bottom: 12px;\n}\n.feature-card h3 { font-size: 14px; font-weight: 600; line-height: 1.4; }\n.feature-desc { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.5; }\n\n/* Screens */\n.screens-section {\n  margin-top: 16px; padding: 36px; background: var(--surface);\n  border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-lg);\n}\n.screens-showcase { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }\n.screen-card { animation: fadeUp 0.4s ease backwards; }\n.screen-preview {\n  background: #1a1a2e; border-radius: 12px; padding: 10px;\n  box-shadow: var(--shadow-md); overflow: hidden;\n}\n.screen-dots { display: flex; gap: 5px; margin-bottom: 10px; }\n.screen-dots span { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.15); }\n.screen-dots span:first-child { background: #ff5f57; }\n.screen-dots span:nth-child(2) { background: #ffbd2e; }\n.screen-dots span:last-child { background: #28ca42; }\n.screen-wireframe { padding: 6px; display: flex; flex-direction: column; gap: 6px; }\n.screen-wireframe .wire-header { background: rgba(255,255,255,0.12); }\n.screen-wireframe .wire-block-lg { background: rgba(255,255,255,0.06); height: 35px; }\n.screen-wireframe .wire-block-sm { background: rgba(255,255,255,0.06); height: 24px; }\n.screen-wireframe .wire-row { display: flex; gap: 6px; }\n.screen-name { text-align: center; font-size: 12px; font-weight: 600; margin-top: 10px; color: var(--muted); }\n\n/* Integrations */\n.integrations-section {\n  margin-top: 16px; padding: 36px; background: var(--surface);\n  border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-lg);\n}\n.integration-grid { display: flex; flex-wrap: wrap; gap: 8px; }\n.integration-chip {\n  padding: 9px 18px; border-radius: 10px; font-size: 13px; font-weight: 500;\n  background: white; border: 1px solid rgba(0,0,0,0.06); transition: 0.2s;\n}\n.integration-chip:hover { border-color: color-mix(in srgb, var(--accent) 25%, transparent); transform: translateY(-1px); }\n\n/* CTA */\n.cta-section { margin-top: 16px; }\n.cta-inner {\n  text-align: center; padding: 56px 36px; border-radius: var(--radius-lg);\n  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, #000));\n  color: white; position: relative; overflow: hidden;\n}\n.cta-inner::before {\n  content: \"\"; position: absolute; inset: 0;\n  background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.12), transparent 60%);\n  pointer-events: none;\n}\n.cta-inner > * { position: relative; z-index: 1; }\n.cta-inner h2 { font-size: clamp(1.4rem, 2.8vw, 2rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 10px; }\n.cta-inner p { font-size: 14px; opacity: 0.85; margin-bottom: 24px; }\n.cta-inner .btn-primary { background: white; color: var(--accent); }\n\n@media (max-width: 860px) {\n  .header-nav { display: none; }\n  .hero-section { grid-template-columns: 1fr; padding: 40px 28px; }\n  .hero-visual { order: -1; }\n  .features-grid { grid-template-columns: repeat(2, 1fr); }\n}\n@media (max-width: 540px) {\n  .features-grid { grid-template-columns: 1fr; }\n}"
+          },
+          {
+            "path": "script.js",
+            "content": "const menuButton = document.querySelector('[data-testid=\"mobile-nav-toggle\"]');\nconst nav = document.querySelector('[data-testid=\"primary-nav\"]');\nconst demoBtn = document.querySelector('[data-testid=\"interactive-demo\"]');\n\nmenuButton?.addEventListener('click', () => {\n  const expanded = menuButton.getAttribute('aria-expanded') === 'true';\n  menuButton.setAttribute('aria-expanded', String(!expanded));\n  nav?.classList.toggle('is-open');\n  \n});\n\ndemoBtn?.addEventListener('click', () => {\n  demoBtn.textContent = 'Launching... \\u2713';\n  demoBtn.style.borderColor = 'var(--accent)';\n  demoBtn.style.color = 'var(--accent)';\n  demoBtn.disabled = true;\n});\n\n// Scroll-triggered fade-in\nconst observer = new IntersectionObserver((entries) => {\n  entries.forEach(entry => {\n    if (entry.isIntersecting) {\n      entry.target.style.opacity = '1';\n      entry.target.style.transform = 'translateY(0)';\n    }\n  });\n}, { threshold: 0.1 });\n\ndocument.querySelectorAll('.feature-card, .screen-card, .article-card, .metric-card, .integration-chip').forEach(el => {\n  el.style.opacity = '0';\n  el.style.transform = 'translateY(14px)';\n  el.style.transition = 'opacity 0.45s ease, transform 0.45s ease';\n  observer.observe(el);\n});\n\n// Smooth scrolling\ndocument.querySelectorAll('a[href^=\"#\"]').forEach(link => {\n  link.addEventListener('click', (e) => {\n    const target = document.querySelector(link.getAttribute('href'));\n    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); nav?.classList.remove('is-open'); }\n  });\n});\n\n// Tab click interactivity\ndocument.querySelectorAll('.card-tab, .cat-tab').forEach(tab => {\n  tab.addEventListener('click', () => {\n    tab.parentElement?.querySelectorAll('.card-tab, .cat-tab').forEach(t => t.classList.remove('active'));\n    tab.classList.add('active');\n  });\n});\n\n// Sidebar nav active state\ndocument.querySelectorAll('.sidebar-item').forEach(item => {\n  item.addEventListener('click', (e) => {\n    e.preventDefault();\n    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));\n    item.classList.add('active');\n  });\n});"
+          },
+          {
+            "path": ".nojekyll",
+            "content": "# Keep Pages from invoking Jekyll."
+          },
+          {
+            "path": ".github/workflows/ci.yml",
+            "content": "name: Static CI\n\non:\n  pull_request:\n  push:\n    branches: [\"main\"]\n\npermissions:\n  contents: read\n\njobs:\n  verify-static-app:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Check entrypoints\n        run: |\n          test -f index.html\n          test -f styles.css\n          test -f script.js\n      - name: Check linked assets\n        run: |\n          grep -q 'href=\"./styles.css\"' index.html\n          grep -q 'src=\"./script.js\"' index.html\n          grep -q 'data-testid=\"hero-section\"' index.html"
+          },
+          {
+            "path": ".github/workflows/deploy-pages.yml",
+            "content": "name: Deploy GitHub Pages\n\non:\n  push:\n    branches: [\"main\"]\n  workflow_dispatch:\n\npermissions:\n  contents: read\n  pages: write\n  id-token: write\n\nconcurrency:\n  group: \"pages\"\n  cancel-in-progress: true\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Validate static starter\n        run: |\n          test -f index.html\n          test -f styles.css\n          test -f script.js\n          grep -q 'href=\"./styles.css\"' index.html\n          grep -q 'src=\"./script.js\"' index.html\n      - uses: actions/configure-pages@v5\n        with:\n          enablement: true\n      - uses: actions/upload-pages-artifact@v3\n        with:\n          path: .\n  deploy:\n    needs: build\n    environment:\n      name: github-pages\n      url: ${{ steps.deployment.outputs.page_url }}\n    runs-on: ubuntu-latest\n    steps:\n      - id: deployment\n        uses: actions/deploy-pages@v4"
+          },
+          {
+            "path": ".github/workflows/claude.yml",
+            "content": "name: Claude Code\n\non:\n  issue_comment:\n    types: [created]\n  pull_request_review_comment:\n    types: [created]\n\npermissions:\n  contents: write\n  issues: write\n  pull-requests: write\n  id-token: write\n\njobs:\n  claude:\n    if: contains(github.event.comment.body, '@claude')\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n      - uses: anthropics/claude-code-action@v1\n        with:\n          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}\n          model: claude-haiku-4-20250414\n          max_turns: 3\n          allowed_tools: \"Bash,View,GlobTool,GrepTool,BatchTool,mcp__github\""
+          },
+          {
+            "path": "CLAUDE.md",
+            "content": "# barbershop app\n\nFollow the issue scope exactly.\n\n- Keep the project GitHub Pages compatible.\n- Stay within static HTML, CSS, JavaScript, and repo-level config files.\n- Commit finished work directly to main for this generated repository.\n- Run the listed CI checks when possible before finishing.\n- Do not introduce server runtimes or secrets into the generated site."
+          }
+        ]
+      },
+      "repo": {
+        "owner": "alishers-company",
+        "name": "barbershop-app",
+        "url": "https://github.com/alishers-company/barbershop-app",
+        "defaultBranch": "main"
+      },
+      "issues": [
+        {
+          "id": "barbershop-app-full-build-1",
+          "title": "Build complete barbershop app site",
+          "summary": "Implement the full barbershop app site end-to-end: page structure, navigation, hero, feature sections, all interactions, styling, responsive design, content, and deployment readiness. Focus on for clients to book appointments and view services.",
+          "githubIssueNumber": 1,
+          "allowedFiles": [
+            "index.html",
+            "styles.css",
+            "script.js",
+            ".nojekyll",
+            ".github/workflows/ci.yml",
+            ".github/workflows/deploy-pages.yml",
+            ".github/workflows/claude.yml",
+            "CLAUDE.md"
+          ],
+          "acceptanceCriteria": [
+            "Page structure with Home, Landing page, Booking confirmation navigation in a static-friendly shell.",
+            "Hero section reflecting \"For clients to book appointments and view services\" with primary CTA above the fold.",
+            "All sections implemented: Hero, Haircuts, Shaves, Trims, Who it is for, Primary call to action.",
+            "Interactive behaviors: Primary CTA flow, Landing page interactions, Booking confirmation interactions, Mobile navigation.",
+            "Responsive layout from mobile to desktop with touch-friendly controls.",
+            "Polished typography, spacing, hover states, and visual style for clients.",
+            "Copy feels tailored and production-ready, not placeholder wireframe text.",
+            "GitHub Pages compatible — static export, metadata, lint and tests pass."
+          ],
+          "expectedDomTargets": [
+            "site-shell",
+            "primary-nav",
+            "hero-section",
+            "feature-grid",
+            "primary-cta",
+            "mobile-nav-toggle",
+            "interactive-demo",
+            "footer-section"
+          ],
+          "ciChecks": [
+            "npm run lint",
+            "npm test"
+          ],
+          "status": "in_progress"
+        }
+      ],
+      "issueExecutions": [
+        {
+          "issueId": "barbershop-app-full-build-1",
+          "status": "running",
+          "branchName": "",
+          "pullRequestUrl": "",
+          "conversationUrl": "",
+          "log": [
+            "Created GitHub issue #1 and queued it for Claude."
+          ]
+        }
+      ],
+      "pullRequests": [],
+      "deployment": {
+        "provider": "github-pages",
+        "status": "pending",
+        "url": "",
+        "log": []
+      },
+      "finalArtifactUrls": null,
+      "error": null
+    }
+  ]
+}
