@@ -32,6 +32,7 @@ import {
 
 type WorkspaceStatus = "ready" | "submitting" | "error";
 type RetryAction = { type: "turn"; answer: string } | { type: "generate" } | null;
+const LIVE_PLAN_THRESHOLD = 3;
 
 export function PlannerWorkspace() {
   const [session, setSession] = useState<PlannerSession>(createInitialSession);
@@ -206,6 +207,13 @@ export function PlannerWorkspace() {
 
       setSession(nextSession);
       setStatus("ready");
+      if (
+        nextQuestionCount >= LIVE_PLAN_THRESHOLD ||
+        plannerTurn.readyToGenerate ||
+        planDone
+      ) {
+        void generateArtifactInBackground(nextSession);
+      }
 
     } catch (error) {
       setStatus("error");
@@ -394,19 +402,14 @@ export function PlannerWorkspace() {
   }
 
   async function launchBuildRun() {
-    if (buildLaunching || status === "submitting" || planGenerating) return;
+    if (!session.artifact || buildLaunching || status === "submitting" || planGenerating) {
+      return;
+    }
 
     setBuildLaunching(true);
     setErrorMessage(null);
 
     try {
-      const artifact =
-        session.artifact || (await generateArtifactInBackground(session));
-
-      if (!artifact) {
-        throw new Error("Could not generate the technical plan for build.");
-      }
-
       const response = await fetch("/api/build-runs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -652,18 +655,6 @@ export function PlannerWorkspace() {
                 >
                   <path d="M3.105 2.288a.75.75 0 0 0-.826.95l1.414 4.926A1.5 1.5 0 0 0 5.135 9.25h6.115a.75.75 0 0 1 0 1.5H5.135a1.5 1.5 0 0 0-1.442 1.086l-1.414 4.926a.75.75 0 0 0 .826.95 28.897 28.897 0 0 0 15.293-7.155.75.75 0 0 0 0-1.114A28.897 28.897 0 0 0 3.105 2.288Z" />
                 </svg>
-              </button>
-              <button
-                className="h-10 shrink-0 rounded-xl bg-stone-800 px-4 text-xs font-medium text-white transition-colors hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-40"
-                disabled={isChatBusy || buildLaunching || planGenerating}
-                onClick={() => void launchBuildRun()}
-                type="button"
-              >
-                {planGenerating
-                  ? "Planning..."
-                  : buildLaunching
-                    ? "Building..."
-                    : "Build"}
               </button>
             </form>
             <p

@@ -10,6 +10,23 @@ import {
 } from "@/lib/planner/schemas";
 
 export const runtime = "nodejs";
+const FALLBACK_MARKDOWN_SYSTEM_PROMPT = `
+You write concise, premium product handoff documents for vibe-coding tools.
+
+Produce three sections in this exact plain-text format:
+TITLE: <short polished app title>
+<<<AGENT_MARKDOWN>>>
+<technical implementation markdown for the AI coding agent>
+<<<USER_MARKDOWN>>>
+<polished user-facing product overview markdown>
+
+Rules:
+- Do not return JSON.
+- Do not add explanations before or after the sections.
+- Keep the TITLE on one line.
+- The AGENT_MARKDOWN should be detailed and implementation-ready.
+- The USER_MARKDOWN should be clear, exciting, and easy for a founder to read.
+`.trim();
 
 export async function POST(request: Request) {
   try {
@@ -62,18 +79,7 @@ export async function POST(request: Request) {
 
       const fallback = await generateText({
         model: getPlannerModel({ jsonExtraction: false }),
-        system: `${MARKDOWN_SYSTEM_PROMPT}
-
-Fallback output mode:
-- Do not return JSON.
-- Do not wrap the whole response in markdown fences.
-- Return these exact section markers on their own lines:
-[[[TITLE]]]
-<single-line title>
-[[[AGENT_MARKDOWN]]]
-<full agent markdown document>
-[[[USER_MARKDOWN]]]
-<full user markdown document>`,
+        system: FALLBACK_MARKDOWN_SYSTEM_PROMPT,
         prompt,
         temperature: 0.45,
         maxRetries: 1,
@@ -113,9 +119,19 @@ function shouldUsePlainTextFallback(error: unknown): boolean {
 }
 
 function parsePlainTextArtifact(text: string) {
-  const title = extractSection(text, "TITLE");
-  const markdown = extractSection(text, "AGENT_MARKDOWN");
-  const userMarkdown = extractSection(text, "USER_MARKDOWN");
+  const markdown =
+    extractSection(text, "AGENT_MARKDOWN") ||
+    extractJsonLikeValue(text, "markdown") ||
+    text.trim();
+  const userMarkdown =
+    extractSection(text, "USER_MARKDOWN") ||
+    extractJsonLikeValue(text, "userMarkdown") ||
+    markdown;
+  const title =
+    extractSection(text, "TITLE") ||
+    extractTitleLine(text) ||
+    extractJsonLikeValue(text, "title") ||
+    "Untitled app concept";
 
   return generatedArtifactModelSchema.parse({
     title: title.split("\n")[0]?.trim() || "Untitled app concept",
@@ -125,19 +141,71 @@ function parsePlainTextArtifact(text: string) {
 }
 
 function extractSection(text: string, name: "TITLE" | "AGENT_MARKDOWN" | "USER_MARKDOWN"): string {
-  const marker = `[[[${name}]]]`;
-  const start = text.indexOf(marker);
+  const markers =
+    name === "TITLE"
+      ? [`[[[${name}]]]`, "TITLE:"]
+      : [`[[[${name}]]]`, `<<<${name}>>>`];
 
-  if (start === -1) {
-    throw new Error(`Fallback output is missing the ${name} section.`);
+  for (const marker of markers) {
+    const start = text.indexOf(marker);
+
+    if (start === -1) {
+      continue;
+    }
+
+    const contentStart = start + marker.length;
+    const nextMarkerIndex = findNextMarkerIndex(text, contentStart);
+    const section =
+      nextMarkerIndex === -1
+        ? text.slice(contentStart)
+        : text.slice(contentStart, nextMarkerIndex);
+
+    const trimmed = section.trim();
+    if (trimmed) {
+      return trimmed;
+    }
   }
 
-  const contentStart = start + marker.length;
-  const nextMarkerIndex = text.indexOf("[[[", contentStart);
-  const section =
-    nextMarkerIndex === -1
-      ? text.slice(contentStart)
-      : text.slice(contentStart, nextMarkerIndex);
+  return "";
+}
 
-  return section.trim();
+function findNextMarkerIndex(text: string, fromIndex: number): number {
+  const candidates = [
+    text.indexOf("[[[", fromIndex),
+    text.indexOf("<<<", fromIndex),
+    text.indexOf("\nTITLE:", fromIndex),
+  ].filter((index) => index !== -1);
+
+  return candidates.length ? Math.min(...candidates) : -1;
+}
+
+function extractTitleLine(text: string): string {
+  const headingMatch = text.match(/^#\s+(.+)$/m);
+  if (headingMatch?.[1]) {
+    return headingMatch[1].trim();
+  }
+
+  const titleMatch = text.match(/^TITLE:\s*(.+)$/m);
+  return titleMatch?.[1]?.trim() || "";
+}
+
+function extractJsonLikeValue(
+  text: string,
+  key: "title" | "markdown" | "userMarkdown",
+): string {
+  const match = text.match(new RegExp(`"${key}"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"`, "s"));
+
+  if (!match?.[1]) {
+    return "";
+  }
+
+  try {
+    return JSON.parse(`"${match[1]}"`).trim();
+  } catch {
+    return match[1]
+      .replace(/\\n/g, "\n")
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, "\\")
+      .trim();
+  }
 }

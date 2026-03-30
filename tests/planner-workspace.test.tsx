@@ -88,7 +88,7 @@ describe("PlannerWorkspace", () => {
     expect(screen.getByText("ScopeFlow")).toBeInTheDocument();
   });
 
-  it("walks through follow-up questions and generates the markdown handoff from Build", async () => {
+  it("walks through follow-up questions and auto-generates the markdown handoff preview", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
 
@@ -173,32 +173,6 @@ describe("PlannerWorkspace", () => {
           }),
           { status: 200 },
         ),
-      )
-      .mockResolvedValueOnce(
-        new Response(
-          JSON.stringify({
-            id: "run-1",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            status: "queued",
-            plannerTitle: "Invoice Sprint",
-            appSpec: null,
-            generatedApp: null,
-            repo: null,
-            issues: [],
-            issueExecutions: [],
-            pullRequests: [],
-            deployment: {
-              provider: "github-pages",
-              status: "pending",
-              url: "",
-              log: [],
-            },
-            finalArtifactUrls: null,
-            error: null,
-          }),
-          { status: 200 },
-        ),
       );
 
     const user = userEvent.setup();
@@ -216,12 +190,10 @@ describe("PlannerWorkspace", () => {
 
     await user.click(screen.getByRole("button", { name: "Freelancers" }));
 
-    await user.click(screen.getByRole("button", { name: "Build" }));
-
     await screen.findByRole("button", { name: "Download .md" });
     expect(
       screen.getByText("A streamlined invoicing assistant for freelancers."),
     ).toBeInTheDocument();
-    expect(fetchMock).toHaveBeenCalledTimes(5);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 });
