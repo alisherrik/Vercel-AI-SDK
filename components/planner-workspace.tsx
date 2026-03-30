@@ -764,7 +764,7 @@ export function PlannerWorkspace() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-stone-400">
-                        Claude Build
+                        Implementation Build
                       </p>
                       <h3 className="mt-1 text-sm font-semibold text-stone-900">
                         {buildRun.status.replaceAll("_", " ")}

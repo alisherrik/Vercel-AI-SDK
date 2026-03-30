@@ -17,8 +17,9 @@ const inFlightRuns = new Set<string>();
 export async function createBuildRun(input: BuildRunCreateRequest): Promise<BuildRun> {
   const now = new Date().toISOString();
   const appSpec = createAppSpec(input.brief, input.messages);
-  const generatedApp = renderStarterApp(appSpec);
-  const issues = createIssueBacklog(appSpec);
+  const agentProvider = getGitHubAdapter().agentProvider;
+  const generatedApp = renderStarterApp(appSpec, agentProvider);
+  const issues = createIssueBacklog(appSpec, agentProvider);
   const run = buildRunSchema.parse({
     id: createId("run"),
     createdAt: now,
@@ -126,9 +127,7 @@ async function runBuildPipeline(id: string): Promise<void> {
           pullRequestUrl: "",
           conversationUrl: "",
           log: [
-            github.agentProvider === "claude"
-              ? `Created GitHub issue #${issue.githubIssueNumber} and queued it for Claude.`
-              : `Created GitHub issue #${issue.githubIssueNumber} and assigned it to Copilot coding agent.`,
+            formatIssueCreationLog(github.agentProvider, issue.githubIssueNumber),
           ],
         })),
         status: "issues_created",
@@ -220,6 +219,21 @@ async function runBuildPipeline(id: string): Promise<void> {
   } finally {
     inFlightRuns.delete(id);
   }
+}
+
+function formatIssueCreationLog(
+  provider: "claude" | "copilot" | "glm",
+  issueNumber: number | null,
+): string {
+  if (provider === "copilot") {
+    return `Created GitHub issue #${issueNumber} and assigned it to Copilot coding agent.`;
+  }
+
+  if (provider === "glm") {
+    return `Created GitHub issue #${issueNumber} and queued it for GLM-4.`;
+  }
+
+  return `Created GitHub issue #${issueNumber} and queued it for Claude.`;
 }
 
 async function patchRun(id: string, patch: Partial<BuildRun>): Promise<BuildRun> {

@@ -46,6 +46,17 @@ AI_MODEL=gpt-4.1-mini
 OPENAI_API_KEY=your_key_here
 ```
 
+### BigModel / GLM-4
+
+BigModel exposes an OpenAI-compatible chat completions API, so the planner can use it through the existing `openai` provider:
+
+```bash
+AI_PROVIDER=openai
+AI_MODEL=glm-4-plus
+OPENAI_API_KEY=your_bigmodel_key_here
+OPENAI_BASE_URL=https://open.bigmodel.cn/api/paas/v4
+```
+
 ### OpenRouter
 
 ```bash
@@ -84,7 +95,7 @@ AI_GATEWAY_API_KEY=your_key_here
 - Persists the active session in `sessionStorage`
 - Renders the markdown inline with `Copy` and `Download .md` actions
 - Can launch a planner-to-production build run that creates an `AppSpec`, starter files, fixed issue backlog, and a GitHub Pages deployment record
-- Can provision a GitHub repo from a template, open implementation issues, trigger Claude on each issue, merge resulting PRs automatically, and wait for GitHub Pages
+- Can provision a GitHub repo from a template, open implementation issues, trigger an implementation agent on each issue, and wait for GitHub Pages
 
 ## Orchestrator Configuration
 
@@ -102,24 +113,27 @@ Optional overrides:
 
 ```bash
 GITHUB_API_URL=https://api.github.com
-GITHUB_AGENT_PROVIDER=claude
+GITHUB_AGENT_PROVIDER=glm
 GITHUB_REPO_PRIVATE=false
 GITHUB_TEMPLATE_OWNER=your-org-or-user
 GITHUB_TEMPLATE_REPO=your-template-repo
 GITHUB_PR_MERGE_METHOD=squash
-GITHUB_ISSUE_LABELS=plan-pilot,copilot-agent
+GITHUB_ISSUE_LABELS=plan-pilot,glm-agent
 GITHUB_COPILOT_ASSIGNEE=copilot-swe-agent[bot]
 GITHUB_COPILOT_APP_SLUG=copilot-swe-agent
 GITHUB_COPILOT_BYPASS_ACTOR_ID=
 GITHUB_COPILOT_MODEL=
 GITHUB_COPILOT_INSTRUCTIONS=
-ANTHROPIC_API_KEY=your_key_here
+BIGMODEL_API_KEY=your_bigmodel_key_here
 ```
 
-The real agent flow now supports two modes:
+The real agent flow now supports three modes:
+
+- `GITHUB_AGENT_PROVIDER=glm`
+  Generated repos receive a custom GitHub Actions workflow that listens for `@glm`, sends the issue scope plus allowed-file contents to BigModel's `glm-4-plus` chat completions API, writes the returned static files, and commits directly to the default branch. This requires `BIGMODEL_API_KEY`.
 
 - `GITHUB_AGENT_PROVIDER=claude`
-  The generated repo receives a Claude GitHub Actions workflow plus `ANTHROPIC_API_KEY`, each issue gets an automated `@claude` kickoff comment, the orchestrator waits for Claude's PR, then merges it after checks pass.
+  The generated repo receives a Claude GitHub Actions workflow plus `ANTHROPIC_API_KEY`, and each issue gets an automated `@claude` kickoff comment.
 - `GITHUB_AGENT_PROVIDER=copilot`
   Each generated issue is created with `assignees: ["copilot-swe-agent[bot]"]`, `agent_assignment.target_repo`, `agent_assignment.base_branch`, and optional custom instructions/model.
 
@@ -147,7 +161,7 @@ AI_MODEL=...
 This app does not reuse the planner provider for GitHub issue automation. They are intentionally separate concerns:
 
 - planner uses `AI_PROVIDER` / `AI_MODEL`
-- GitHub automation uses either Claude (`ANTHROPIC_API_KEY`) or Copilot (`GITHUB_AGENT_PROVIDER=copilot`)
+- GitHub automation uses GLM (`BIGMODEL_API_KEY`), Claude (`ANTHROPIC_API_KEY`), or Copilot (`GITHUB_AGENT_PROVIDER=copilot`)
 
 ## Verification
 

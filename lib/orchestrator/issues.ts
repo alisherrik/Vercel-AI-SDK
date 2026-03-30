@@ -1,14 +1,16 @@
 import { slugify } from "@/lib/planner/brief";
 import type { AppSpec, IssuePlan } from "@/lib/planner/schemas";
 
-export function createIssueBacklog(spec: AppSpec): IssuePlan[] {
+type AgentProvider = "copilot" | "claude" | "glm";
+
+export function createIssueBacklog(spec: AppSpec, agentProvider: AgentProvider): IssuePlan[] {
   return [
     {
       id: `${slugify(spec.appName)}-full-build-1`,
       title: `Build complete ${spec.appName} site`,
       summary: `Implement the full ${spec.appName} site end-to-end: page structure, navigation, hero, feature sections, all interactions, styling, responsive design, content, and deployment readiness. Focus on ${spec.issueInputs.primaryGoal.toLowerCase()}.`,
       githubIssueNumber: null,
-      allowedFiles: allowedFilesForStarter(spec.starterKind),
+      allowedFiles: allowedFilesForStarter(spec.starterKind, agentProvider),
       acceptanceCriteria: [
         `Page structure with ${spec.pages.join(", ")} navigation in a static-friendly shell.`,
         `Hero section reflecting "${spec.issueInputs.primaryGoal}" with primary CTA above the fold.`,
@@ -35,7 +37,10 @@ export function createIssueBacklog(spec: AppSpec): IssuePlan[] {
   ];
 }
 
-function allowedFilesForStarter(starterKind: AppSpec["starterKind"]): string[] {
+function allowedFilesForStarter(
+  starterKind: AppSpec["starterKind"],
+  agentProvider: AgentProvider,
+): string[] {
   const common = [
     "index.html",
     "styles.css",
@@ -43,8 +48,7 @@ function allowedFilesForStarter(starterKind: AppSpec["starterKind"]): string[] {
     ".nojekyll",
     ".github/workflows/ci.yml",
     ".github/workflows/deploy-pages.yml",
-    ".github/workflows/claude.yml",
-    "CLAUDE.md",
+    ...agentSupportFiles(agentProvider),
   ];
 
   if (starterKind === "dashboard") {
@@ -56,4 +60,20 @@ function allowedFilesForStarter(starterKind: AppSpec["starterKind"]): string[] {
   }
 
   return common;
+}
+
+function agentSupportFiles(agentProvider: AgentProvider): string[] {
+  if (agentProvider === "copilot") {
+    return [];
+  }
+
+  if (agentProvider === "glm") {
+    return [
+      ".github/workflows/agent.yml",
+      ".github/scripts/implement-with-glm.mjs",
+      "AGENT.md",
+    ];
+  }
+
+  return [".github/workflows/agent.yml", "AGENT.md"];
 }

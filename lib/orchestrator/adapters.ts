@@ -12,7 +12,7 @@ import type {
 } from "@/lib/planner/schemas";
 
 type GitHubOwnerType = "org" | "user";
-type AgentProvider = "copilot" | "claude";
+export type AgentProvider = "copilot" | "claude" | "glm";
 
 type GitHubRepoResponse = {
   owner: { login: string };
@@ -83,7 +83,7 @@ export function getGitHubAdapter(): GitHubAdapter {
 
 class FakeGitHubAdapter implements GitHubAdapter {
   readonly mode: GitHubAdapter["mode"] = "fake";
-  readonly agentProvider: AgentProvider = "claude";
+  readonly agentProvider: AgentProvider = readAgentProvider();
 
   async createRepository(name: string): Promise<GitHubRepo> {
     const owner = process.env.GITHUB_OWNER || "internal-operator";
@@ -136,7 +136,7 @@ class FakeGitHubAdapter implements GitHubAdapter {
         conversationUrl: `${repo.url}/issues/${issueNumber}`,
         log: [
           `Opened issue #${issueNumber}.`,
-          "Triggered Claude automation from the issue thread.",
+          `Triggered ${formatAgentDisplayName(this.agentProvider)} automation from the issue thread.`,
           `Committed the implementation directly to ${repo.defaultBranch}.`,
         ],
       },
@@ -250,6 +250,14 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
       }
 
       await this.upsertActionsSecret(repo, "ANTHROPIC_API_KEY", this.anthropicApiKey);
+    } else if (this.agentProvider === "glm") {
+      const bigModelApiKey = process.env.BIGMODEL_API_KEY?.trim() || "";
+
+      if (!bigModelApiKey) {
+        throw new Error("BIGMODEL_API_KEY must be set for GLM issue automation.");
+      }
+
+      await this.upsertActionsSecret(repo, "BIGMODEL_API_KEY", bigModelApiKey);
     }
   }
 
@@ -368,6 +376,7 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
       };
     }
 
+    const agentProvider = this.agentProvider;
     const issueNumber = issue.githubIssueNumber;
     const issueUrl = `${repo.url}/issues/${issueNumber}`;
     const previousHeadSha = await this.getBranchHeadSha(repo, repo.defaultBranch);
@@ -375,7 +384,7 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
       "POST",
       `/repos/${encodeURIComponent(repo.owner)}/${encodeURIComponent(repo.name)}/issues/${issueNumber}/comments`,
       {
-        body: buildClaudeIssuePrompt(issue),
+        body: buildAgentIssuePrompt(agentProvider, issue),
       },
     );
 
@@ -399,8 +408,8 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
         conversationUrl: comment.html_url || issueUrl,
         log: [
           `Opened GitHub issue #${issueNumber}.`,
-          "Posted an @claude implementation request.",
-          `Claude committed ${commit.sha.slice(0, 7)} directly to ${repo.defaultBranch}.`,
+          `Posted a ${formatAgentMention(agentProvider)} implementation request.`,
+          `${formatAgentDisplayName(agentProvider)} committed ${commit.sha.slice(0, 7)} directly to ${repo.defaultBranch}.`,
         ],
       },
       pullRequest: null,
@@ -482,7 +491,7 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
     }
 
     throw new Error(
-      `Claude did not commit directly to ${branch} for issue #${issueNumber} in time.`,
+      `${formatAgentDisplayName(this.agentProvider)} did not commit directly to ${branch} for issue #${issueNumber} in time.`,
     );
   }
 
@@ -595,9 +604,13 @@ function createIssueLabels(): string[] {
 }
 
 function readAgentProvider(): AgentProvider {
-  return process.env.GITHUB_AGENT_PROVIDER?.trim().toLowerCase() === "copilot"
-    ? "copilot"
-    : "claude";
+  const provider = process.env.GITHUB_AGENT_PROVIDER?.trim().toLowerCase();
+
+  if (provider === "copilot" || provider === "claude" || provider === "glm") {
+    return provider;
+  }
+
+  return "glm";
 }
 
 function formatIssueBody(issue: IssuePlan): string {
@@ -639,17 +652,38 @@ function buildCopilotInstructions(
   return parts.join("\n");
 }
 
-function buildClaudeIssuePrompt(issue: IssuePlan): string {
+function buildAgentIssuePrompt(
+  provider: Exclude<AgentProvider, "copilot">,
+  issue: IssuePlan,
+): string {
+  const mention = formatAgentMention(provider);
+
   return [
-    "@claude implement this issue and commit the finished changes directly to main.",
+    `${mention} implement this issue and commit the finished changes directly to main.`,
     "Do not create a new branch.",
     "Do not open a pull request.",
     "Stay strictly within the allowed files listed in the issue body.",
     "Satisfy every acceptance criterion before you finish.",
     "Run the listed CI checks when possible before committing.",
     "Use GitHub Pages-safe static files only.",
+    ...(provider === "glm" ? ["Read AGENT.md before touching files."] : []),
     `Allowed files: ${issue.allowedFiles.join(", ")}`,
   ].join("\n");
+}
+
+function formatAgentDisplayName(provider: AgentProvider): string {
+  switch (provider) {
+    case "copilot":
+      return "Copilot coding agent";
+    case "glm":
+      return "GLM-4";
+    default:
+      return "Claude";
+  }
+}
+
+function formatAgentMention(provider: Exclude<AgentProvider, "copilot">): "@claude" | "@glm" {
+  return provider === "glm" ? "@glm" : "@claude";
 }
 
 function sealSecret(publicKey: string, value: string): string {
