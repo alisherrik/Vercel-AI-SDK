@@ -968,7 +968,7 @@ document.querySelectorAll('.sidebar-item').forEach(item => {
 }
 
 function renderCiWorkflow(): string {
-  return `name: Static CI
+  return `name: Interactive UI CI
 
 on:
   pull_request:
@@ -979,7 +979,7 @@ permissions:
   contents: read
 
 jobs:
-  verify-static-app:
+  verify-interactive-ui:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -1018,7 +1018,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate static starter
+      - name: Validate interactive starter
         run: |
           test -f index.html
           test -f styles.css
@@ -1128,6 +1128,7 @@ jobs:
           node-version: 20
       - name: Run GLM-4 implementation
         id: implement
+        continue-on-error: true
         env:
           BIGMODEL_API_KEY: \${{ secrets.BIGMODEL_API_KEY }}
           BIGMODEL_BASE_URL: https://open.bigmodel.cn/api/paas/v4/chat/completions
@@ -1135,7 +1136,7 @@ jobs:
           GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
         run: node .github/scripts/implement-with-glm.mjs
       - name: Commit implementation
-        if: steps.implement.outputs.changed == 'true'
+        if: steps.implement.outcome == 'success' && steps.implement.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -1143,7 +1144,7 @@ jobs:
           git commit -m "feat: implement issue #\${{ github.event.issue.number }} with GLM-4"
           git push origin HEAD:\${{ github.event.repository.default_branch }}
       - name: Post completion note
-        if: steps.implement.outputs.changed == 'true'
+        if: steps.implement.outcome == 'success' && steps.implement.outputs.changed == 'true'
         uses: actions/github-script@v7
         with:
           script: |
@@ -1151,8 +1152,36 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "GLM-4 committed the requested implementation directly to the default branch."
+              body: \`GLM-4 committed the requested implementation directly to the default branch.\n\nSummary: \${process.env.GLM_SUMMARY || "Completed implementation."}\`
             })
+        env:
+          GLM_SUMMARY: \${{ steps.implement.outputs.summary }}
+      - name: Post no-change note
+        if: steps.implement.outcome == 'success' && steps.implement.outputs.changed != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: \`GLM-4 reviewed the issue but did not produce file changes.\n\nSummary: \${process.env.GLM_SUMMARY || "No repository updates were necessary."}\`
+            })
+        env:
+          GLM_SUMMARY: \${{ steps.implement.outputs.summary }}
+      - name: Post failure note
+        if: steps.implement.outcome != 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: \`GLM-4 could not complete the implementation run.\n\nError: \${process.env.GLM_ERROR || "Unknown error"}\`
+            })
+        env:
+          GLM_ERROR: \${{ steps.implement.outputs.error }}
 `;
 }
 
@@ -1164,8 +1193,8 @@ function renderAgentInstructions(spec: AppSpec, agentProvider: AgentProvider): s
 Follow the issue scope exactly.
 
 - You are the ${agentName} implementation agent for this repository.
-- Keep the project GitHub Pages compatible.
-- Stay within static HTML, CSS, JavaScript, and repo-level config files.
+- Build interactive client-side pages that remain GitHub Pages compatible.
+- Stay within HTML, CSS, JavaScript, and repo-level config files.
 - Commit finished work directly to main for this generated repository.
 - Run the listed CI checks when possible before finishing.
 - Do not introduce server runtimes or secrets into the generated site.
@@ -1221,15 +1250,18 @@ async function main() {
       model: DEFAULT_MODEL,
       stream: false,
       temperature: 0.2,
+      response_format: { type: "json_object" },
       messages: [
         {
           role: "system",
           content: [
             "You are a senior front-end implementation agent working inside GitHub Actions.",
             "Return only JSON with this shape:",
-            '{ "summary": "short summary", "files": [{ "path": "file", "content": "full file contents" }] }',
+            '{ "summary": "short summary", "files": [{ "path": "file", "contentBase64": "base64 encoded full file contents" }] }',
             "Only return files from the allowed list.",
-            "Every returned file content must be the full final file, not a diff.",
+            "Every returned file must contain the full final file, not a diff.",
+            "Use contentBase64 for every file so multiline HTML, CSS, and JavaScript stay valid JSON.",
+            "Prioritize rich, interactive client-side pages instead of flat static brochure content.",
             "Do not include markdown fences or commentary.",
           ].join("\\n"),
         },
@@ -1261,7 +1293,8 @@ async function main() {
   }
 
   const payload = await response.json();
-  const content = payload?.choices?.[0]?.message?.content;
+  const rawContent = payload?.choices?.[0]?.message?.content;
+  const content = normalizeMessageContent(rawContent);
 
   if (typeof content !== "string" || !content.trim()) {
     throw new Error("BigModel returned an empty message.");
@@ -1274,7 +1307,7 @@ async function main() {
   }
 
   for (const file of result.files) {
-    if (!file || typeof file.path !== "string" || typeof file.content !== "string") {
+    if (!file || typeof file.path !== "string") {
       throw new Error("BigModel returned an invalid file payload.");
     }
 
@@ -1282,23 +1315,23 @@ async function main() {
       throw new Error(\`Model attempted to edit disallowed file: \${file.path}\`);
     }
 
-    await writeFile(file.path, file.content, "utf8");
+    const nextContent = readFileContent(file);
+    await writeFile(file.path, nextContent, "utf8");
   }
 
   const changedFiles = listChangedFiles();
-  const outputPath = process.env.GITHUB_OUTPUT;
-
-  if (outputPath) {
-    await writeFile(outputPath, \`changed=\${changedFiles.length > 0 ? "true" : "false"}\\n\`, {
-      encoding: "utf8",
-      flag: "a",
-    });
-  }
 
   if (changedFiles.length === 0) {
     console.log("GLM-4 produced no file changes.");
+    await appendOutput("changed", "false");
+    await appendOutput("summary", typeof result.summary === "string" ? result.summary : "No file changes were produced.");
   } else {
     console.log(\`Updated files: \${changedFiles.join(", ")}\`);
+    await appendOutput("changed", "true");
+    await appendOutput(
+      "summary",
+      typeof result.summary === "string" ? result.summary : \`Updated files: \${changedFiles.join(", ")}\`,
+    );
   }
 }
 
@@ -1337,25 +1370,131 @@ function parseBulletedSection(body, heading) {
 }
 
 function parseModelJson(content) {
-  const trimmed = content.trim();
+  const trimmed = stripMarkdownFences(content).trim();
 
   try {
     return JSON.parse(trimmed);
   } catch {}
 
-  const fenced = trimmed.match(/\\\`\\\`\\\`(?:json)?\\s*([\\s\\S]*?)\\s*\\\`\\\`\\\`/i);
-  if (fenced) {
-    return JSON.parse(fenced[1]);
-  }
-
-  const firstBrace = trimmed.indexOf("{");
-  const lastBrace = trimmed.lastIndexOf("}");
-
-  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-    return JSON.parse(trimmed.slice(firstBrace, lastBrace + 1));
+  const candidate = extractFirstJsonObject(trimmed);
+  if (candidate) {
+    return JSON.parse(candidate);
   }
 
   throw new Error("Unable to parse JSON returned by BigModel.");
+}
+
+function normalizeMessageContent(content) {
+  if (typeof content === "string") {
+    return content;
+  }
+
+  if (Array.isArray(content)) {
+    return content
+      .map((item) => {
+        if (typeof item === "string") {
+          return item;
+        }
+
+        if (item && typeof item === "object") {
+          if (typeof item.text === "string") {
+            return item.text;
+          }
+
+          if (item.type === "text" && typeof item.content === "string") {
+            return item.content;
+          }
+        }
+
+        return "";
+      })
+      .join("");
+  }
+
+  return "";
+}
+
+function stripMarkdownFences(content) {
+  return content
+    .replace(/^\\s*\\\`\\\`\\\`(?:json)?\\s*/i, "")
+    .replace(/\\s*\\\`\\\`\\\`\\s*$/i, "");
+}
+
+function extractFirstJsonObject(content) {
+  const start = content.indexOf("{");
+  if (start === -1) {
+    return null;
+  }
+
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+
+  for (let index = start; index < content.length; index += 1) {
+    const char = content[index];
+
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+
+      if (char === "\\\\") {
+        escaped = true;
+        continue;
+      }
+
+      if (char === '"') {
+        inString = false;
+      }
+
+      continue;
+    }
+
+    if (char === '"') {
+      inString = true;
+      continue;
+    }
+
+    if (char === "{") {
+      depth += 1;
+      continue;
+    }
+
+    if (char === "}") {
+      depth -= 1;
+      if (depth === 0) {
+        return content.slice(start, index + 1);
+      }
+    }
+  }
+
+  return null;
+}
+
+function readFileContent(file) {
+  if (typeof file.contentBase64 === "string") {
+    return Buffer.from(file.contentBase64, "base64").toString("utf8");
+  }
+
+  if (typeof file.content === "string") {
+    return file.content;
+  }
+
+  throw new Error(\`BigModel did not provide content for \${file.path}.\`);
+}
+
+async function appendOutput(name, value) {
+  const outputPath = process.env.GITHUB_OUTPUT;
+  if (!outputPath) {
+    return;
+  }
+
+  const normalized = String(value ?? "").replace(/\\r/g, "").trim();
+  await writeFile(outputPath, \`\${name}<<__GLM__\\n\${normalized}\\n__GLM__\\n\`, {
+    encoding: "utf8",
+    flag: "a",
+  });
 }
 
 function listChangedFiles() {
@@ -1372,7 +1511,12 @@ function listChangedFiles() {
 
 main().catch((error) => {
   console.error(error);
-  process.exitCode = 1;
+  const message = error instanceof Error ? error.message : String(error);
+  appendOutput("changed", "false")
+    .then(() => appendOutput("error", message))
+    .finally(() => {
+      process.exitCode = 1;
+    });
 });
 `;
 }

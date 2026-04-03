@@ -1,0 +1,15 @@
+﻿2026-03-30T15:48:31.2011596Z ##[group]Run node .github/scripts/implement-with-glm.mjs
+2026-03-30T15:48:31.2012212Z [36;1mnode .github/scripts/implement-with-glm.mjs[0m
+2026-03-30T15:48:31.2043238Z shell: /usr/bin/bash -e {0}
+2026-03-30T15:48:31.2043633Z env:
+2026-03-30T15:48:31.2044219Z   BIGMODEL_API_KEY: ***
+2026-03-30T15:48:31.2044763Z   BIGMODEL_BASE_URL: https://open.bigmodel.cn/api/paas/v4/chat/completions
+2026-03-30T15:48:31.2045265Z   BIGMODEL_MODEL: glm-4-plus
+2026-03-30T15:48:31.2045768Z   GITHUB_TOKEN: ***
+2026-03-30T15:48:31.2046034Z ##[endgroup]
+2026-03-30T15:49:16.6346877Z SyntaxError: Unterminated string in JSON at position 15480
+2026-03-30T15:49:16.6347921Z     at JSON.parse (<anonymous>)
+2026-03-30T15:49:16.6349244Z     at parseModelJson (file:///home/runner/work/b2b-saas-for/b2b-saas-for/.github/scripts/implement-with-glm.mjs:180:17)
+2026-03-30T15:49:16.6350801Z     at main (file:///home/runner/work/b2b-saas-for/b2b-saas-for/.github/scripts/implement-with-glm.mjs:95:18)
+2026-03-30T15:49:16.6352150Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-03-30T15:49:16.6987604Z ##[error]Process completed with exit code 1.

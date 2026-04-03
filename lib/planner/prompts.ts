@@ -65,7 +65,7 @@ Technical implementation instructions. Write this as a build spec that an AI age
 5. JavaScript Behaviors — event handlers, state management, animations, transitions
 6. Data & Content — exact copy text, placeholder content, JSON data structures
 7. Acceptance Criteria — measurable checklist the agent must satisfy
-8. Constraints — no frameworks, vanilla JS only, GitHub Pages compatible, static files only
+8. Constraints — no frameworks, vanilla JS only, GitHub Pages compatible, interactive client-side pages only
 
 DOCUMENT 2 — "userMarkdown" (for the user to understand):
 A polished product overview explaining what will be built. Include:

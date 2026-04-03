@@ -84,12 +84,12 @@ export function createAppSpec(
     ]),
     githubPagesConstraints: [
       "No server runtime",
-      "Static HTML, CSS, and JavaScript only",
+      "Interactive client-side HTML, CSS, and JavaScript only",
       "Relative asset paths only",
       "Deploy via GitHub Pages workflow",
     ],
     issueInputs: {
-      primaryGoal: brief.appGoal || "Turn the product brief into a static production-ready site",
+      primaryGoal: brief.appGoal || "Turn the product brief into an interactive production-ready web experience",
       audience: fallbackList(brief.targetUsers, ["Internal stakeholders"]),
       coreScreens: fallbackList(brief.keyScreens, ["Home"]),
       interactions: fallbackList(interactions, ["Primary CTA flow"]),

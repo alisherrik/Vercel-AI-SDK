@@ -12,14 +12,14 @@ export function createIssueBacklog(spec: AppSpec, agentProvider: AgentProvider):
       githubIssueNumber: null,
       allowedFiles: allowedFilesForStarter(spec.starterKind, agentProvider),
       acceptanceCriteria: [
-        `Page structure with ${spec.pages.join(", ")} navigation in a static-friendly shell.`,
+        `Page structure with ${spec.pages.join(", ")} navigation in an interactive client-side shell.`,
         `Hero section reflecting "${spec.issueInputs.primaryGoal}" with primary CTA above the fold.`,
         `All sections implemented: ${spec.sections.join(", ")}.`,
         `Interactive behaviors: ${spec.issueInputs.interactions.join(", ")}.`,
         `Responsive layout from mobile to desktop with touch-friendly controls.`,
         `Polished typography, spacing, hover states, and visual style for ${spec.issueInputs.audience.join(", ")}.`,
         `Copy feels tailored and production-ready, not placeholder wireframe text.`,
-        `GitHub Pages compatible — static export, metadata, lint and tests pass.`,
+        `GitHub Pages compatible — interactive client-side pages, metadata, lint and tests pass.`,
       ],
       expectedDomTargets: [
         "site-shell",

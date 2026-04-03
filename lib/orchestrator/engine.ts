@@ -46,23 +46,37 @@ export async function createBuildRun(input: BuildRunCreateRequest): Promise<Buil
 
 export async function retryBuildRun(id: string): Promise<BuildRun> {
   const existing = await getBuildRunOrThrow(id);
+  const agentProvider = getGitHubAdapter().agentProvider;
+  const appSpec = existing.appSpec;
+  const regeneratedApp = appSpec ? renderStarterApp(appSpec, agentProvider) : existing.generatedApp;
+  const regeneratedIssues = appSpec ? createIssueBacklog(appSpec, agentProvider) : existing.issues;
+
+  if (existing.repo && regeneratedApp) {
+    const github = getGitHubAdapter();
+    await github.configureRepositoryAutomation(existing.repo);
+    await github.pushGeneratedApp(existing.repo, regeneratedApp);
+  }
+
   const retried: BuildRun = {
     ...existing,
+    generatedApp: regeneratedApp,
     updatedAt: new Date().toISOString(),
     status: existing.repo ? "repo_provisioned" : "queued",
     error: null,
-    issues: existing.issues.map((issue) => ({
+    issues: regeneratedIssues.map((issue) => ({
       ...issue,
-      status: issue.status === "completed" ? "completed" : "pending",
+      githubIssueNumber: null,
+      status: "pending",
     })),
-    issueExecutions: existing.issueExecutions.map((execution) => ({
-      ...execution,
-      status: execution.status === "completed" ? "completed" : "pending",
-      log: execution.status === "completed" ? execution.log : [],
-      branchName: execution.status === "completed" ? execution.branchName : "",
-      pullRequestUrl:
-        execution.status === "completed" ? execution.pullRequestUrl : "",
+    issueExecutions: regeneratedIssues.map((issue) => ({
+      issueId: issue.id,
+      status: "pending",
+      branchName: "",
+      pullRequestUrl: "",
+      conversationUrl: "",
+      log: [],
     })),
+    pullRequests: [],
     deployment: createDeploymentRecord(),
   };
 

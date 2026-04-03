@@ -51,6 +51,20 @@ type GitHubActionsSecretKeyResponse = {
   key_id: string;
 };
 
+type GitHubWorkflowRunsResponse = {
+  workflow_runs?: Array<{
+    id: number;
+    created_at?: string;
+    html_url?: string;
+    status?: string;
+    conclusion?: string | null;
+    event?: string;
+    path?: string;
+    display_title?: string;
+    head_branch?: string;
+  }>;
+};
+
 export interface ProcessedIssueResult {
   issue: IssuePlan;
   execution: IssueExecution;
@@ -168,6 +182,10 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
     process.env.GITHUB_ISSUE_TIMEOUT_MS,
     20 * 60_000,
   );
+  private readonly repositoryReadyTimeoutMs = readDuration(
+    process.env.GITHUB_REPOSITORY_READY_TIMEOUT_MS,
+    45_000,
+  );
   private readonly pollIntervalMs = readDuration(
     process.env.GITHUB_POLL_INTERVAL_MS,
     15_000,
@@ -208,6 +226,8 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
       : this.ownerType === "user"
         ? await this.request<GitHubRepoResponse>("POST", "/user/repos", payload)
         : await this.createRepositoryWithFallback(payload);
+
+    await this.waitForRepositoryAvailability(repo.owner.login, repo.name);
 
     return {
       owner: repo.owner.login,
@@ -380,6 +400,7 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
     const issueNumber = issue.githubIssueNumber;
     const issueUrl = `${repo.url}/issues/${issueNumber}`;
     const previousHeadSha = await this.getBranchHeadSha(repo, repo.defaultBranch);
+    const requestedAt = new Date().toISOString();
     const comment = await this.request<GitHubIssueCommentResponse>(
       "POST",
       `/repos/${encodeURIComponent(repo.owner)}/${encodeURIComponent(repo.name)}/issues/${issueNumber}/comments`,
@@ -393,6 +414,8 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
       repo.defaultBranch,
       previousHeadSha,
       issueNumber,
+      issue.title,
+      requestedAt,
     );
 
     return {
@@ -468,6 +491,8 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
     branch: string,
     previousHeadSha: string,
     issueNumber: number,
+    issueTitle: string,
+    requestedAt: string,
   ): Promise<{ sha: string; htmlUrl: string }> {
     const deadline = Date.now() + this.issueTimeoutMs;
 
@@ -487,11 +512,56 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
         };
       }
 
+      const workflowRun = await this.findIssueAutomationRun(
+        repo,
+        branch,
+        issueTitle,
+        requestedAt,
+      );
+
+      if (workflowRun?.conclusion === "failure") {
+        throw new Error(
+          `Implementation workflow failed for issue #${issueNumber}: ${workflowRun.html_url || "no run URL available"}`,
+        );
+      }
+
+      if (workflowRun?.conclusion === "cancelled" || workflowRun?.conclusion === "timed_out") {
+        throw new Error(
+          `Implementation workflow ended with ${workflowRun.conclusion} for issue #${issueNumber}: ${workflowRun.html_url || "no run URL available"}`,
+        );
+      }
+
+      if (workflowRun?.conclusion === "success") {
+        throw new Error(
+          `Implementation workflow finished without committing directly to ${branch} for issue #${issueNumber}: ${workflowRun.html_url || "no run URL available"}`,
+        );
+      }
+
       await wait(this.pollIntervalMs);
     }
 
     throw new Error(
       `${formatAgentDisplayName(this.agentProvider)} did not commit directly to ${branch} for issue #${issueNumber} in time.`,
+    );
+  }
+
+  private async findIssueAutomationRun(
+    repo: GitHubRepo,
+    branch: string,
+    issueTitle: string,
+    requestedAt: string,
+  ) {
+    const runs = await this.request<GitHubWorkflowRunsResponse>(
+      "GET",
+      `/repos/${encodeURIComponent(repo.owner)}/${encodeURIComponent(repo.name)}/actions/runs?event=issue_comment&per_page=20`,
+    );
+
+    return (runs.workflow_runs || []).find(
+      (run) =>
+        run.path === ".github/workflows/agent.yml" &&
+        run.head_branch === branch &&
+        run.display_title === issueTitle &&
+        (run.created_at || "") >= requestedAt,
     );
   }
 
@@ -545,6 +615,32 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
       console.warn("[github-create-repo:fallback-user]", error);
       return this.request<GitHubRepoResponse>("POST", "/user/repos", payload);
     }
+  }
+
+  private async waitForRepositoryAvailability(owner: string, name: string): Promise<void> {
+    const pathname = `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(name)}`;
+    const deadline = Date.now() + this.repositoryReadyTimeoutMs;
+
+    while (Date.now() < deadline) {
+      const response = await this.rawRequest("GET", pathname);
+
+      if (response.ok) {
+        return;
+      }
+
+      if (response.status !== 404) {
+        const details = await safeReadText(response);
+        throw new Error(
+          `GitHub API GET ${pathname} failed while waiting for repository readiness (${response.status}): ${details}`,
+        );
+      }
+
+      await sleep(Math.min(this.pollIntervalMs, 3_000));
+    }
+
+    throw new Error(
+      `Repository ${owner}/${name} did not become available within ${Math.round(this.repositoryReadyTimeoutMs / 1000)}s.`,
+    );
   }
 
   private async rawRequest(
@@ -613,6 +709,10 @@ function readAgentProvider(): AgentProvider {
   return "glm";
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function formatIssueBody(issue: IssuePlan): string {
   return [
     issue.summary,
@@ -665,7 +765,7 @@ function buildAgentIssuePrompt(
     "Stay strictly within the allowed files listed in the issue body.",
     "Satisfy every acceptance criterion before you finish.",
     "Run the listed CI checks when possible before committing.",
-    "Use GitHub Pages-safe static files only.",
+    "Build interactive client-side pages that stay GitHub Pages compatible.",
     ...(provider === "glm" ? ["Read AGENT.md before touching files."] : []),
     `Allowed files: ${issue.allowedFiles.join(", ")}`,
   ].join("\n");

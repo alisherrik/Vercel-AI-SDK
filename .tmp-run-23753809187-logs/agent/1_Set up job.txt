@@ -1,0 +1,33 @@
+﻿2026-03-30T15:48:22.2200985Z Current runner version: '2.333.0'
+2026-03-30T15:48:22.2224769Z ##[group]Runner Image Provisioner
+2026-03-30T15:48:22.2225544Z Hosted Compute Agent
+2026-03-30T15:48:22.2226084Z Version: 20260213.493
+2026-03-30T15:48:22.2226848Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-03-30T15:48:22.2227489Z Build Date: 2026-02-13T00:28:41Z
+2026-03-30T15:48:22.2228128Z Worker ID: {c02b3bd3-eac0-4fd0-a8d3-099dffb59766}
+2026-03-30T15:48:22.2228776Z Azure Region: northcentralus
+2026-03-30T15:48:22.2229336Z ##[endgroup]
+2026-03-30T15:48:22.2230647Z ##[group]Operating System
+2026-03-30T15:48:22.2231205Z Ubuntu
+2026-03-30T15:48:22.2231642Z 24.04.4
+2026-03-30T15:48:22.2232063Z LTS
+2026-03-30T15:48:22.2232461Z ##[endgroup]
+2026-03-30T15:48:22.2232915Z ##[group]Runner Image
+2026-03-30T15:48:22.2233391Z Image: ubuntu-24.04
+2026-03-30T15:48:22.2233889Z Version: 20260323.65.1
+2026-03-30T15:48:22.2234799Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260323.65/images/ubuntu/Ubuntu2404-Readme.md
+2026-03-30T15:48:22.2236820Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260323.65
+2026-03-30T15:48:22.2237670Z ##[endgroup]
+2026-03-30T15:48:22.2238629Z ##[group]GITHUB_TOKEN Permissions
+2026-03-30T15:48:22.2240747Z Contents: write
+2026-03-30T15:48:22.2241257Z Issues: write
+2026-03-30T15:48:22.2241736Z Metadata: read
+2026-03-30T15:48:22.2242200Z ##[endgroup]
+2026-03-30T15:48:22.2244833Z Secret source: Actions
+2026-03-30T15:48:22.2245698Z Prepare workflow directory
+2026-03-30T15:48:22.2559882Z Prepare all required actions
+2026-03-30T15:48:22.2600020Z Getting action download info
+2026-03-30T15:48:22.6717718Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-03-30T15:48:22.7922229Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-03-30T15:48:22.9731116Z Download action repository 'actions/github-script@v7' (SHA:f28e40c7f34bde8b3046d885e986cb6290c5673b)
+2026-03-30T15:48:23.4242011Z Complete job name: agent

@@ -1,0 +1,76 @@
+﻿2026-03-30T15:48:23.4924773Z ##[group]Run actions/checkout@v4
+2026-03-30T15:48:23.4925762Z with:
+2026-03-30T15:48:23.4926392Z   fetch-depth: 0
+2026-03-30T15:48:23.4927102Z   repository: alishers-company/b2b-saas-for
+2026-03-30T15:48:23.4928025Z   token: ***
+2026-03-30T15:48:23.4928525Z   ssh-strict: true
+2026-03-30T15:48:23.4929064Z   ssh-user: git
+2026-03-30T15:48:23.4929598Z   persist-credentials: true
+2026-03-30T15:48:23.4930154Z   clean: true
+2026-03-30T15:48:23.4930710Z   sparse-checkout-cone-mode: true
+2026-03-30T15:48:23.4931316Z   fetch-tags: false
+2026-03-30T15:48:23.4931828Z   show-progress: true
+2026-03-30T15:48:23.4932371Z   lfs: false
+2026-03-30T15:48:23.4932844Z   submodules: false
+2026-03-30T15:48:23.4933626Z   set-safe-directory: true
+2026-03-30T15:48:23.4934521Z ##[endgroup]
+2026-03-30T15:48:23.6083598Z Syncing repository: alishers-company/b2b-saas-for
+2026-03-30T15:48:23.6085825Z ##[group]Getting Git version info
+2026-03-30T15:48:23.6086864Z Working directory is '/home/runner/work/b2b-saas-for/b2b-saas-for'
+2026-03-30T15:48:23.6088101Z [command]/usr/bin/git version
+2026-03-30T15:48:23.6120322Z git version 2.53.0
+2026-03-30T15:48:23.6143197Z ##[endgroup]
+2026-03-30T15:48:23.6156665Z Temporarily overriding HOME='/home/runner/work/_temp/186ef8bf-58f4-49ca-ad45-5d03425463d7' before making global git config changes
+2026-03-30T15:48:23.6158136Z Adding repository directory to the temporary git global config as a safe directory
+2026-03-30T15:48:23.6161897Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/b2b-saas-for/b2b-saas-for
+2026-03-30T15:48:23.6190146Z Deleting the contents of '/home/runner/work/b2b-saas-for/b2b-saas-for'
+2026-03-30T15:48:23.6193341Z ##[group]Initializing the repository
+2026-03-30T15:48:23.6197559Z [command]/usr/bin/git init /home/runner/work/b2b-saas-for/b2b-saas-for
+2026-03-30T15:48:23.6274428Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-03-30T15:48:23.6275654Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-03-30T15:48:23.6277455Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-03-30T15:48:23.6278225Z hint: call:
+2026-03-30T15:48:23.6278628Z hint:
+2026-03-30T15:48:23.6279684Z hint: 	git config --global init.defaultBranch <name>
+2026-03-30T15:48:23.6280314Z hint:
+2026-03-30T15:48:23.6280887Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-03-30T15:48:23.6281820Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-03-30T15:48:23.6282578Z hint:
+2026-03-30T15:48:23.6282985Z hint: 	git branch -m <name>
+2026-03-30T15:48:23.6283474Z hint:
+2026-03-30T15:48:23.6284112Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-03-30T15:48:23.6285631Z Initialized empty Git repository in /home/runner/work/b2b-saas-for/b2b-saas-for/.git/
+2026-03-30T15:48:23.6287740Z [command]/usr/bin/git remote add origin https://github.com/alishers-company/b2b-saas-for
+2026-03-30T15:48:23.6314175Z ##[endgroup]
+2026-03-30T15:48:23.6315806Z ##[group]Disabling automatic garbage collection
+2026-03-30T15:48:23.6318731Z [command]/usr/bin/git config --local gc.auto 0
+2026-03-30T15:48:23.6345484Z ##[endgroup]
+2026-03-30T15:48:23.6347172Z ##[group]Setting up auth
+2026-03-30T15:48:23.6353260Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-03-30T15:48:23.6382047Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-03-30T15:48:23.6628707Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-03-30T15:48:23.6655001Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-03-30T15:48:23.6829729Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-03-30T15:48:23.6863430Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-03-30T15:48:23.7041648Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-03-30T15:48:23.7072283Z ##[endgroup]
+2026-03-30T15:48:23.7073185Z ##[group]Fetching the repository
+2026-03-30T15:48:23.7080903Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-03-30T15:48:24.0502262Z From https://github.com/alishers-company/b2b-saas-for
+2026-03-30T15:48:24.0505961Z  * [new branch]      main       -> origin/main
+2026-03-30T15:48:24.0530180Z [command]/usr/bin/git branch --list --remote origin/main
+2026-03-30T15:48:24.0549386Z   origin/main
+2026-03-30T15:48:24.0555954Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-03-30T15:48:24.0574253Z 931855408e84d6b17b3cf9c2825e4dda8aab332a
+2026-03-30T15:48:24.0579003Z ##[endgroup]
+2026-03-30T15:48:24.0581045Z ##[group]Determining the checkout info
+2026-03-30T15:48:24.0583222Z ##[endgroup]
+2026-03-30T15:48:24.0585534Z [command]/usr/bin/git sparse-checkout disable
+2026-03-30T15:48:24.0619572Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-03-30T15:48:24.0644174Z ##[group]Checking out the ref
+2026-03-30T15:48:24.0648787Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-03-30T15:48:24.0684739Z Switched to a new branch 'main'
+2026-03-30T15:48:24.0686313Z branch 'main' set up to track 'origin/main'.
+2026-03-30T15:48:24.0691089Z ##[endgroup]
+2026-03-30T15:48:24.0720453Z [command]/usr/bin/git log -1 --format=%H
+2026-03-30T15:48:24.0741239Z 931855408e84d6b17b3cf9c2825e4dda8aab332a
