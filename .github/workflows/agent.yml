@@ -1,0 +1,80 @@
+name: GLM Auto-Fix Agent
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  glm-fix:
+    # Only run when issue body contains @glm trigger
+    if: contains(github.event.issue.body, '@glm')
+    runs-on: ubuntu-latest
+
+    env:
+      GLM_API_KEY: ${{ secrets.GLM_API_KEY }}
+      GH_TOKEN: ${{ github.token }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+      ISSUE_TITLE: ${{ github.event.issue.title }}
+      ISSUE_BODY: ${{ github.event.issue.body }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+          token: ${{ github.token }}
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run GLM implement script
+        id: glm
+        run: node .github/scripts/implement-with-glm.mjs
+
+      - name: Commit and push to default branch
+        if: steps.glm.outputs.has_changes == 'true'
+        run: |
+          git config user.name "GLM Auto Fix Bot"
+          git config user.email "glm-bot@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No actual file changes detected, skipping push."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+          else
+            SUMMARY="${{ steps.glm.outputs.summary }}"
+            git commit -m "fix: resolve issue #${ISSUE_NUMBER} - ${SUMMARY}"
+            git push origin ${{ github.event.repository.default_branch }}
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+          fi
+        id: push
+
+      - name: Comment success on issue
+        if: steps.push.outputs.pushed == 'true'
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --body "✅ **GLM-4 fixed this issue** and pushed changes directly to \`${{ github.event.repository.default_branch }}\`.
+
+          **Summary:** ${{ steps.glm.outputs.summary }}"
+
+      - name: Comment no changes on issue
+        if: steps.glm.outputs.has_changes != 'true'
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --body "⚠️ GLM-4 analyzed this issue but produced no file changes."
+
+      - name: Comment failure on issue
+        if: failure()
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --body "❌ GLM-4 failed to generate a valid code fix for this issue. Check the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
