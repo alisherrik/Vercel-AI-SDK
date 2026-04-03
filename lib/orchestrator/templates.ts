@@ -1145,43 +1145,37 @@ jobs:
           git push origin HEAD:\${{ github.event.repository.default_branch }}
       - name: Post completion note
         if: steps.implement.outcome == 'success' && steps.implement.outputs.changed == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: \`GLM-4 committed the requested implementation directly to the default branch.\n\nSummary: \${process.env.GLM_SUMMARY || "Completed implementation."}\`
-            })
         env:
+          GH_TOKEN: \${{ github.token }}
           GLM_SUMMARY: \${{ steps.implement.outputs.summary }}
+        run: |
+          gh issue comment "\${{ github.event.issue.number }}" \\
+            --repo "\${{ github.repository }}" \\
+            --body "GLM-4 committed the requested implementation directly to the default branch.
+
+          Summary: \$GLM_SUMMARY"
       - name: Post no-change note
         if: steps.implement.outcome == 'success' && steps.implement.outputs.changed != 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: \`GLM-4 reviewed the issue but did not produce file changes.\n\nSummary: \${process.env.GLM_SUMMARY || "No repository updates were necessary."}\`
-            })
         env:
+          GH_TOKEN: \${{ github.token }}
           GLM_SUMMARY: \${{ steps.implement.outputs.summary }}
+        run: |
+          gh issue comment "\${{ github.event.issue.number }}" \\
+            --repo "\${{ github.repository }}" \\
+            --body "GLM-4 reviewed the issue but did not produce file changes.
+
+          Summary: \$GLM_SUMMARY"
       - name: Post failure note
         if: steps.implement.outcome != 'success'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: \`GLM-4 could not complete the implementation run.\n\nError: \${process.env.GLM_ERROR || "Unknown error"}\`
-            })
         env:
+          GH_TOKEN: \${{ github.token }}
           GLM_ERROR: \${{ steps.implement.outputs.error }}
+        run: |
+          gh issue comment "\${{ github.event.issue.number }}" \\
+            --repo "\${{ github.repository }}" \\
+            --body "GLM-4 could not complete the implementation run.
+
+          Error: \$GLM_ERROR"
 `;
 }
 
@@ -1372,16 +1366,53 @@ function parseBulletedSection(body, heading) {
 function parseModelJson(content) {
   const trimmed = stripMarkdownFences(content).trim();
 
+  // Strategy 1: direct parse
   try {
     return JSON.parse(trimmed);
   } catch {}
 
-  const candidate = extractFirstJsonObject(trimmed);
+  // Strategy 2: fix unescaped chars inside strings + trailing commas
+  const fixed = removeTrailingCommas(fixUnescapedStrings(trimmed));
+  try {
+    return JSON.parse(fixed);
+  } catch {}
+
+  // Strategy 3: extract first JSON object via balanced-braces scan
+  const candidate = extractFirstJsonObject(content);
   if (candidate) {
-    return JSON.parse(candidate);
+    try {
+      return JSON.parse(candidate);
+    } catch {}
+    const fixedCandidate = removeTrailingCommas(fixUnescapedStrings(candidate));
+    try {
+      return JSON.parse(fixedCandidate);
+    } catch {}
   }
 
+  console.error("=== JSON PARSE FAILED ===");
+  console.error("First 500 chars:", content.slice(0, 500));
   throw new Error("Unable to parse JSON returned by BigModel.");
+}
+
+function fixUnescapedStrings(text) {
+  const out = [];
+  let inStr = false;
+  let esc = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (esc) { out.push(c); esc = false; continue; }
+    if (c === "\\\\" && inStr) { out.push(c); esc = true; continue; }
+    if (c === '"') { inStr = !inStr; out.push(c); continue; }
+    if (inStr && c === "\\n") { out.push("\\\\n"); continue; }
+    if (inStr && c === "\\r") { out.push("\\\\r"); continue; }
+    if (inStr && c === "\\t") { out.push("\\\\t"); continue; }
+    out.push(c);
+  }
+  return out.join("");
+}
+
+function removeTrailingCommas(text) {
+  return text.replace(/,\\s*([}\\]])/g, "$1");
 }
 
 function normalizeMessageContent(content) {
