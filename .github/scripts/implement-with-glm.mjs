@@ -9,21 +9,51 @@
  */
 
 import { execSync } from "node:child_process";
-import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+
+// ────────────────────────────────────────────────────────────────────────────
+// Load .env file (if it exists in the repo root)
+// ────────────────────────────────────────────────────────────────────────────
+
+function loadEnvFile() {
+  // Try .env.glm first (committed to repo), then .env as fallback
+  for (const name of [".env.glm", ".env"]) {
+    const envPath = resolve(process.cwd(), name);
+    if (!existsSync(envPath)) continue;
+    console.log(`Loading env from ${name}`);
+    const lines = readFileSync(envPath, "utf-8").split("\n");
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const eqIdx = trimmed.indexOf("=");
+      if (eqIdx === -1) continue;
+      const key = trimmed.slice(0, eqIdx).trim();
+      const val = trimmed.slice(eqIdx + 1).trim();
+      // Don't overwrite existing env vars (secrets take priority)
+      if (!process.env[key]) {
+        process.env[key] = val;
+      }
+    }
+    break; // load only the first found
+  }
+}
+
+loadEnvFile();
 
 // ────────────────────────────────────────────────────────────────────────────
 // Config
 // ────────────────────────────────────────────────────────────────────────────
 
-const API_KEY = process.env.GLM_API_KEY;
+const API_KEY = process.env.BIGMODEL_API_KEY;
 if (!API_KEY) {
-  console.error("ERROR: GLM_API_KEY secret is not set.");
+  console.error("ERROR: BIGMODEL_API_KEY not found.");
+  console.error("Set it as a GitHub Secret or put it in the .env file.");
   process.exit(1);
 }
 
-const GLM_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
-const GLM_MODEL = "glm-4";
+const GLM_URL = process.env.BIGMODEL_BASE_URL || "https://open.bigmodel.cn/api/paas/v4/chat/completions";
+const GLM_MODEL = process.env.BIGMODEL_MODEL || "glm-4-plus";
 
 // ────────────────────────────────────────────────────────────────────────────
 // Helpers
