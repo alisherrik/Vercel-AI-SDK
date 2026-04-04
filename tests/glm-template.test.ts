@@ -57,7 +57,7 @@ describe("GLM generator templates", () => {
     expect(script?.content).toContain("function parseModelJson(content)");
     expect(script?.content).toContain('appendOutput("error", message)');
     expect(script?.content).toContain("Generating:");
-    expect(script?.content).toContain("Prioritize rich, interactive client-side pages");
-    expect(instructions?.content).toContain("Build interactive client-side pages");
+    expect(script?.content).toContain("IntersectionObserver for scroll reveals");
+    expect(instructions?.content).toContain("Agent Implementation Guide");
   });
 });

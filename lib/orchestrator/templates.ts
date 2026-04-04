@@ -1182,16 +1182,57 @@ jobs:
 function renderAgentInstructions(spec: AppSpec, agentProvider: AgentProvider): string {
   const agentName = agentProvider === "glm" ? "GLM-4" : "Claude";
 
-  return `# ${spec.appName}
+  return `# ${spec.appName} — Agent Implementation Guide
 
-Follow the issue scope exactly.
+You are the **${agentName}** implementation agent for this repository.
+Follow the issue scope exactly and build production-quality interactive pages.
 
-- You are the ${agentName} implementation agent for this repository.
-- Build interactive client-side pages that remain GitHub Pages compatible.
-- Stay within HTML, CSS, JavaScript, and repo-level config files.
-- Commit finished work directly to main for this generated repository.
-- Run the listed CI checks when possible before finishing.
-- Do not introduce server runtimes or secrets into the generated site.
+## Core Rules
+- All pages must be **static client-side only** (GitHub Pages compatible).
+- Use **only** HTML, CSS, and vanilla JavaScript. No frameworks, no build tools, no npm.
+- Commit finished work directly to the default branch.
+- Do not introduce server runtimes, backend APIs, databases, or secrets.
+
+## Quality Standards
+
+### HTML
+- Use semantic HTML5 elements: \`<header>\`, \`<nav>\`, \`<main>\`, \`<section>\`, \`<article>\`, \`<footer>\`.
+- Every interactive element must have \`aria-*\` attributes for accessibility.
+- Include \`<meta name="viewport">\` for responsive design.
+- All images must have \`alt\` attributes. Use SVG or CSS for icons/illustrations.
+
+### CSS
+- Use CSS custom properties (\`--var\`) for theming (colors, spacing, radius).
+- Mobile-first responsive design with \`@media\` breakpoints at 768px and 1024px.
+- Add smooth transitions: \`transition: all 0.3s ease\` on interactive elements.
+- Use \`hover\`, \`focus\`, and \`active\` states on all clickable elements.
+- Implement subtle animations: fade-ins with \`@keyframes\`, scroll reveals, hover lifts.
+- Use \`box-shadow\` for depth. Cards should have hover elevation changes.
+- Typography: use \`clamp()\` for fluid font sizes. Set \`line-height: 1.6\` for body.
+
+### JavaScript Interactivity
+- **Required interactions:** mobile nav toggle, smooth scroll, scroll-triggered animations,
+  active nav highlighting, tab/accordion components if content warrants them.
+- Use \`IntersectionObserver\` for scroll-based reveal animations.
+- Use \`classList.toggle\` for state changes, never inline styles.
+- If the page has data/metrics, render dynamic charts using \`<canvas>\` or CSS-only charts.
+- Add \`data-testid\` attributes on key sections for CI testing.
+- All JS must be in \`DOMContentLoaded\` or deferred.
+
+### Visual Design
+- Create a polished, modern look — not a wireframe or placeholder.
+- Use gradients, glassmorphism, or neumorphism where appropriate.
+- Hero sections should be visually striking with large typography and clear CTAs.
+- Feature grids should use cards with icons, consistent padding, and alignment.
+- Footer should have multiple columns with links.
+- Use CSS Grid and Flexbox for layouts, never floats.
+
+## Anti-Patterns (DO NOT)
+- Do not output placeholder text like "Lorem ipsum" or "Coming soon".
+- Do not create empty sections or stub functions.
+- Do not use \`alert()\` or \`document.write()\`.
+- Do not use inline \`style=\` attributes.
+- Do not leave console.log statements in production code.
 `;
 }
 
@@ -1241,12 +1282,18 @@ async function main() {
     {
       role: "system",
       content: [
-        "You are a senior front-end implementation agent.",
-        "Analyze the issue and return ONLY a JSON object with this shape:",
-        '{ "summary": "what you will do", "filePlan": [{ "path": "file.html", "description": "what changes to make" }] }',
-        "Only include files from the allowed list.",
-        "Do not return file contents yet, only the plan.",
-        "Do not include markdown fences.",
+        "You are a senior front-end architect who builds polished, interactive websites.",
+        "Analyze the issue and plan the implementation. Return ONLY a JSON object:",
+        '{ "summary": "what you will build", "filePlan": [{ "path": "file.html", "description": "detailed description of content and interactions" }] }',
+        "",
+        "Planning rules:",
+        "- Only include files from the allowed list.",
+        "- Do not return file contents yet, only the detailed plan.",
+        "- For index.html: plan a complete page with hero, features, metrics, CTA, footer.",
+        "- For styles.css: plan responsive design, CSS variables, animations, hover effects.",
+        "- For script.js: plan real interactivity — nav toggle, scroll animations, dynamic content.",
+        "- The description for each file should be 2-3 sentences explaining what to build.",
+        "- Do not include markdown fences in your response.",
       ].join("\\n"),
     },
     {
@@ -1280,10 +1327,22 @@ async function main() {
       {
         role: "system",
         content: [
-          "You are a senior front-end developer.",
-          "Return ONLY the complete file content. No JSON wrapping, no markdown fences, no explanations.",
-          "Return the raw file content exactly as it should be saved to disk.",
-          "Prioritize rich, interactive client-side pages.",
+          "You are an elite front-end developer who writes production-quality code.",
+          "Return ONLY the raw file content — no JSON, no markdown fences, no explanations.",
+          "The output will be saved directly to disk as-is.",
+          "",
+          "Quality requirements:",
+          "- Write COMPLETE, polished code — not stubs or placeholders.",
+          "- HTML: semantic elements, accessibility attributes, responsive meta tags.",
+          "- CSS: custom properties for theming, mobile-first @media queries, smooth transitions,",
+          "  hover/focus/active states, subtle animations (@keyframes fade-in, slide-up),",
+          "  modern layout with CSS Grid/Flexbox, box-shadows for depth, clamp() for fluid type.",
+          "- JS: IntersectionObserver for scroll reveals, classList.toggle for state,",
+          "  smooth scrolling, mobile nav hamburger, dynamic content rendering,",
+          "  data-testid attributes on key sections, all code inside DOMContentLoaded.",
+          "- Visual: modern gradients, card hover elevation, striking hero section,",
+          "  real content (not lorem ipsum), polished typography and spacing.",
+          "- NO inline styles, NO alert(), NO console.log, NO placeholder text.",
         ].join("\\n"),
       },
       {
