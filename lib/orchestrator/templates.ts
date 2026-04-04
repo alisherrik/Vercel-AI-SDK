@@ -1026,8 +1026,6 @@ jobs:
           grep -q 'href="./styles.css"' index.html
           grep -q 'src="./script.js"' index.html
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
@@ -1142,6 +1140,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "feat: implement issue #\${{ github.event.issue.number }} with GLM-4"
+          git pull --rebase origin \${{ github.event.repository.default_branch }}
           git push origin HEAD:\${{ github.event.repository.default_branch }}
       - name: Post completion note
         if: steps.implement.outcome == 'success' && steps.implement.outputs.changed == 'true'
@@ -1706,7 +1705,7 @@ function listChangedFiles() {
 
   return output
     .split(/\\r?\\n/)
-    .map((line) => line.trim().slice(3))
+    .map((line) => line.slice(3).trim())
     .filter(Boolean);
 }
 

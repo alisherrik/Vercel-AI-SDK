@@ -199,14 +199,14 @@ export const issueExecutionSchema = z.object({
   branchName: z.string().trim().max(120).default(""),
   pullRequestUrl: z.string().trim().max(300).default(""),
   conversationUrl: z.string().trim().max(300).default(""),
-  log: z.array(nonEmptyString.max(240)).default([]),
+  log: z.array(nonEmptyString.max(1000)).default([]),
 });
 
 export const deploymentRecordSchema = z.object({
   provider: z.literal("github-pages"),
   status: z.enum(["pending", "deploying", "success", "failed"]),
   url: z.string().trim().max(300).default(""),
-  log: z.array(nonEmptyString.max(240)).default([]),
+  log: z.array(nonEmptyString.max(1000)).default([]),
 });
 
 export const buildRunStageSchema = z.enum([

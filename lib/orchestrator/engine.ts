@@ -53,7 +53,11 @@ export async function retryBuildRun(id: string): Promise<BuildRun> {
 
   if (existing.repo && regeneratedApp) {
     const github = getGitHubAdapter();
-    await github.configureRepositoryAutomation(existing.repo);
+    try {
+      await github.configureRepositoryAutomation(existing.repo);
+    } catch (err) {
+      console.warn("[retry] configureRepositoryAutomation failed, continuing:", err);
+    }
     await github.pushGeneratedApp(existing.repo, regeneratedApp);
   }
 
