@@ -1114,6 +1114,7 @@ on:
 permissions:
   contents: write
   issues: write
+  workflows: write
 
 jobs:
   agent:
@@ -1262,10 +1263,27 @@ async function main() {
   const issue = event.issue;
   const comment = event.comment;
   const issueBody = typeof issue?.body === "string" ? issue.body : "";
-  const allowedFiles = parseBulletedSection(issueBody, "Allowed files:");
+  const allAllowedFiles = parseBulletedSection(issueBody, "Allowed files:");
+
+  // Infrastructure files that GLM must never regenerate
+  const INFRA_PATTERNS = [
+    ".github/workflows/",
+    ".github/scripts/",
+    "AGENT.md",
+    ".nojekyll",
+  ];
+  const allowedFiles = allAllowedFiles.filter(
+    (f) => !INFRA_PATTERNS.some((p) => f.startsWith(p) || f === p),
+  );
 
   if (!allowedFiles.length) {
-    throw new Error("Could not find any allowed files in the issue body.");
+    throw new Error("No content files to generate (all allowed files are infrastructure).");
+  }
+
+  console.log("Content files to generate:", allowedFiles.join(", "));
+  if (allAllowedFiles.length !== allowedFiles.length) {
+    const skipped = allAllowedFiles.filter((f) => !allowedFiles.includes(f));
+    console.log("Skipped infrastructure files:", skipped.join(", "));
   }
 
   const currentFiles = await Promise.all(

@@ -58,6 +58,8 @@ describe("GLM generator templates", () => {
     expect(script?.content).toContain('appendOutput("error", message)');
     expect(script?.content).toContain("Generating:");
     expect(script?.content).toContain("IntersectionObserver for scroll reveals");
+    expect(script?.content).toContain("INFRA_PATTERNS");
+    expect(script?.content).toContain("Skipped infrastructure files:");
     expect(instructions?.content).toContain("Agent Implementation Guide");
   });
 });
