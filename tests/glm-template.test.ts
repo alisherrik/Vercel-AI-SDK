@@ -59,7 +59,7 @@ describe("GLM generator templates", () => {
     expect(script?.content).toContain("function parseModelJson(content)");
     expect(script?.content).toContain('appendOutput("error", message)');
     expect(script?.content).toContain("Generating:");
-    expect(script?.content).toContain("IntersectionObserver for scroll reveals");
+    expect(script?.content).toContain("IntersectionObserver for .reveal elements");
     expect(script?.content).toContain("INFRA_PATTERNS");
     expect(script?.content).toContain("Skipped infrastructure files:");
     expect(script?.content).toContain('"glm-4.5-air"');

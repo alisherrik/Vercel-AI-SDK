@@ -94,34 +94,111 @@ function renderSkeletonPage(spec: AppSpec, page: string): string {
 </html>`;
 }
 
-/* ── Skeleton CSS ── */
+/* ── Skeleton CSS with Design System ── */
 function renderSkeletonStyles(spec: AppSpec): string {
+  // Derive palette variations from the accent color
   return `:root {
+  /* ── Core palette ── */
   --bg: ${spec.theme.background};
   --surface: ${spec.theme.surface};
   --accent: ${spec.theme.accent};
   --text: ${spec.theme.text};
+  --accent-light: color-mix(in srgb, var(--accent) 12%, transparent);
+  --accent-hover: color-mix(in srgb, var(--accent) 85%, #000);
+  --muted: color-mix(in srgb, var(--text) 55%, transparent);
+  --border: color-mix(in srgb, var(--text) 8%, transparent);
+  --border-hover: color-mix(in srgb, var(--text) 16%, transparent);
+
+  /* ── Spacing scale ── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+
+  /* ── Typography scale (fluid) ── */
+  --text-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.8rem);
+  --text-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.875rem);
+  --text-base: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
+  --text-lg: clamp(1.05rem, 0.95rem + 0.5vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 1rem + 1.1vw, 1.75rem);
+  --text-2xl: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
+  --text-3xl: clamp(1.8rem, 1.2rem + 2.8vw, 3rem);
+  --text-4xl: clamp(2.2rem, 1.3rem + 4vw, 4rem);
+  --text-hero: clamp(2.5rem, 1.5rem + 5vw, 5rem);
+
+  /* ── Shadows ── */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
+  --shadow-xl: 0 20px 50px -5px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.04);
+  --shadow-glow: 0 0 20px color-mix(in srgb, var(--accent) 25%, transparent);
+
+  /* ── Radii ── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* ── Transitions ── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
 }
 
-/* Reset */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* GLM will replace all styles below with a complete, polished design */
-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background: var(--surface); }
-.brand { font-weight: 700; font-size: 1.2rem; }
-.nav-links { display: flex; gap: 1rem; }
-.nav-link { text-decoration: none; color: var(--text); }
+/* ── Animation keyframes library ── */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+@keyframes gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+/* ── Scroll-reveal class (JS adds .is-visible) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Minimal structural styles (GLM replaces everything below) ── */
+nav { display: flex; align-items: center; justify-content: space-between; padding: var(--space-md) var(--space-xl); background: var(--surface); }
+.brand { font-weight: 700; font-size: var(--text-lg); letter-spacing: -0.02em; }
+.nav-links { display: flex; gap: var(--space-md); }
+.nav-link { text-decoration: none; color: var(--text); font-size: var(--text-sm); font-weight: 500; transition: color var(--duration-fast); }
+.nav-link:hover { color: var(--accent); }
 .nav-link.active { color: var(--accent); font-weight: 600; }
-.menu-toggle { display: none; background: none; border: 1px solid var(--text); padding: 0.3rem 0.6rem; cursor: pointer; font-size: 1.2rem; border-radius: 4px; }
-main { padding: 2rem; }
-footer { padding: 1rem 2rem; text-align: center; border-top: 1px solid #ddd; margin-top: 2rem; }
+.menu-toggle { display: none; background: none; border: 1px solid var(--border); padding: var(--space-xs) var(--space-sm); cursor: pointer; font-size: var(--text-lg); border-radius: var(--radius-sm); }
+main { padding: var(--space-xl); }
+footer { padding: var(--space-md) var(--space-xl); text-align: center; border-top: 1px solid var(--border); margin-top: var(--space-2xl); }
 @media (max-width: 768px) {
   .menu-toggle { display: block; }
   .nav-links { display: none; }
@@ -399,46 +476,167 @@ ${projectContext}
 - Commit finished work directly to the default branch.
 - Do not introduce server runtimes, backend APIs, databases, or secrets.
 
+## Design System
+
+The \`styles.css\` file ships with a complete design-token system. You MUST use these tokens everywhere
+instead of hard-coded values. This guarantees visual consistency:
+
+\`\`\`
+/* Already defined in :root — just USE them: */
+var(--bg)  var(--surface)  var(--accent)  var(--text)
+var(--accent-light)  var(--accent-hover)  var(--muted)  var(--border)
+var(--space-xs..4xl)  var(--text-xs..hero)
+var(--shadow-xs..xl)  var(--shadow-glow)
+var(--radius-sm..full)
+var(--ease-out)  var(--ease-spring)  var(--duration-fast/normal/slow)
+\`\`\`
+
+Animation keyframes already defined: \`fadeIn\`, \`fadeUp\`, \`fadeDown\`, \`slideInLeft\`, \`slideInRight\`, \`scaleIn\`, \`shimmer\`, \`float\`, \`pulse\`, \`gradient\`.
+
+Use \`.reveal\` class + JS \`IntersectionObserver\` to add \`.is-visible\` for scroll animations.
+
+## Visual Design Reference (target: Stripe / Linear / Vercel quality)
+
+### Hero Section Pattern
+\`\`\`css
+.hero {
+  min-height: 80vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 50%, color-mix(in srgb, var(--accent) 5%, var(--bg)) 100%);
+  position: relative; overflow: hidden;
+}
+.hero::before { /* subtle gradient orb */
+  content: ''; position: absolute; width: 600px; height: 600px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 15%, transparent), transparent 70%);
+  top: -200px; right: -100px; pointer-events: none;
+}
+.hero h1 {
+  font-size: var(--text-hero); font-weight: 800;
+  letter-spacing: -0.04em; line-height: 1.05;
+  background: linear-gradient(135deg, var(--text), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+\`\`\`
+
+### Glass Card Pattern
+\`\`\`css
+.glass-card {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-xl);
+  transition: transform var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out);
+}
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+\`\`\`
+
+### Gradient Button Pattern
+\`\`\`css
+.btn-primary {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: white; font-weight: 600; font-size: var(--text-sm);
+  border: none; cursor: pointer;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 30%, transparent);
+  transition: all var(--duration-normal) var(--ease-spring);
+}
+.btn-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+\`\`\`
+
+### Sticky Nav with Blur
+\`\`\`css
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: var(--space-md) var(--space-2xl);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  backdrop-filter: blur(12px) saturate(150%);
+  border-bottom: 1px solid var(--border);
+  transition: background var(--duration-normal);
+}
+\`\`\`
+
+### Feature Grid with Staggered Animation
+\`\`\`css
+.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-lg); }
+.feature-card {
+  padding: var(--space-xl); border-radius: var(--radius-lg);
+  background: var(--surface); border: 1px solid var(--border);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+.feature-card:hover { border-color: var(--accent); box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+.feature-icon {
+  width: 48px; height: 48px; border-radius: var(--radius-md);
+  background: var(--accent-light); display: flex; align-items: center; justify-content: center;
+  margin-bottom: var(--space-md); font-size: 1.5rem;
+}
+\`\`\`
+
+### Section Spacing & Dividers
+\`\`\`css
+section { padding: var(--space-4xl) var(--space-2xl); }
+.section-label {
+  font-size: var(--text-xs); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.15em; color: var(--accent); margin-bottom: var(--space-sm);
+}
+.section-title {
+  font-size: var(--text-3xl); font-weight: 800;
+  letter-spacing: -0.03em; margin-bottom: var(--space-lg);
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-lg); }
+\`\`\`
+
 ## Quality Standards
 
 ### HTML
-- Use semantic HTML5 elements: \`<header>\`, \`<nav>\`, \`<main>\`, \`<section>\`, \`<article>\`, \`<footer>\`.
-- Every interactive element must have \`aria-*\` attributes for accessibility.
-- Include \`<meta name="viewport">\` for responsive design.
-- All images must have \`alt\` attributes. Use SVG or CSS for icons/illustrations.
+- Use semantic HTML5: \`<header>\`, \`<nav>\`, \`<main>\`, \`<section>\`, \`<article>\`, \`<footer>\`.
+- Every interactive element must have \`aria-*\` attributes.
+- Include \`<meta name="viewport">\` and \`<link rel="preconnect" href="https://fonts.googleapis.com">\`.
+- Add Google Fonts \`<link>\` for Inter font (weights 400, 500, 600, 700, 800).
+- Use SVG inline or CSS for all icons — never image URLs.
+- Add \`data-testid\` attributes on key sections.
 
 ### CSS
-- Use CSS custom properties (\`--var\`) for theming (colors, spacing, radius).
-- Mobile-first responsive design with \`@media\` breakpoints at 768px and 1024px.
-- Add smooth transitions: \`transition: all 0.3s ease\` on interactive elements.
-- Use \`hover\`, \`focus\`, and \`active\` states on all clickable elements.
-- Implement subtle animations: fade-ins with \`@keyframes\`, scroll reveals, hover lifts.
-- Use \`box-shadow\` for depth. Cards should have hover elevation changes.
-- Typography: use \`clamp()\` for fluid font sizes. Set \`line-height: 1.6\` for body.
+- Use the design tokens from \`:root\` — NEVER hard-code colors, spacing, or font sizes.
+- Mobile-first responsive design with breakpoints at 768px and 1024px.
+- Every interactive element needs \`hover\`, \`focus-visible\`, and \`active\` states.
+- Use CSS Grid for page layouts, Flexbox for component internals.
+- Apply \`transition\` on all interactive elements using the token durations.
+- Use \`backdrop-filter: blur()\` for glass effects on nav and cards.
+- Use \`background: linear-gradient()\` for visual depth in hero and CTA sections.
+- Add \`::before\` / \`::after\` pseudo-elements for decorative gradient orbs.
+- Cards must elevate on hover (\`translateY(-4px)\` + shadow increase).
+- Use \`clamp()\` vars for fluid typography — never fixed \`px\` font sizes.
+- Section padding should use \`var(--space-4xl)\` for generous whitespace.
 
-### JavaScript Interactivity
-- **Required interactions:** mobile nav toggle, smooth scroll, scroll-triggered animations,
-  active nav highlighting, tab/accordion components if content warrants them.
-- Use \`IntersectionObserver\` for scroll-based reveal animations.
-- Use \`classList.toggle\` for state changes, never inline styles.
-- If the page has data/metrics, render dynamic charts using \`<canvas>\` or CSS-only charts.
-- Add \`data-testid\` attributes on key sections for CI testing.
-- All JS must be in \`DOMContentLoaded\` or deferred.
-
-### Visual Design
-- Create a polished, modern look — not a wireframe or placeholder.
-- Use gradients, glassmorphism, or neumorphism where appropriate.
-- Hero sections should be visually striking with large typography and clear CTAs.
-- Feature grids should use cards with icons, consistent padding, and alignment.
-- Footer should have multiple columns with links.
-- Use CSS Grid and Flexbox for layouts, never floats.
+### JavaScript
+- Use \`IntersectionObserver\` to toggle \`.is-visible\` on \`.reveal\` elements for scroll animations.
+- Smooth scroll for anchor links.
+- Mobile hamburger menu with animated open/close.
+- Active nav link highlighting on scroll.
+- Add staggered delays to card animations using \`transitionDelay\`.
+- Tab/accordion components only if relevant to the page content.
+- All code inside \`DOMContentLoaded\`.
 
 ## Anti-Patterns (DO NOT)
 - Do not output placeholder text like "Lorem ipsum" or "Coming soon".
 - Do not create empty sections or stub functions.
 - Do not use \`alert()\` or \`document.write()\`.
-- Do not use inline \`style=\` attributes.
-- Do not leave console.log statements in production code.
+- Do not use inline \`style=\` attributes (except for stagger delays).
+- Do not leave \`console.log\` in production code.
+- Do not use fixed pixel values for spacing — always use \`var(--space-*)\`.
+- Do not hard-code colors — always reference \`var(--accent)\`, \`var(--text)\`, etc.
+- Do not create flat, boring layouts — every section must have visual depth via shadows, gradients, or blur.
 `;
 }
 
@@ -505,20 +703,23 @@ async function main() {
     {
       role: "system",
       content: [
-        "You are a senior front-end architect who builds polished, interactive websites.",
+        "You are an award-winning front-end architect who builds websites that rival Stripe, Linear, and Vercel in visual polish.",
         "Read the AGENT.md instructions and issue body CAREFULLY — they describe EXACTLY what app to build.",
-        "Your job is to plan an implementation that matches the user's specific request, NOT a generic template.",
+        "Your job is to plan an implementation with PREMIUM UI quality — not a generic template.",
+        "Think about the design holistically: color harmony, whitespace, visual hierarchy, micro-interactions, depth via shadows and gradients.",
+        "",
         "Analyze the issue and plan the implementation. Return ONLY a JSON object:",
-        '{ "summary": "what you will build (be specific to the user request)", "filePlan": [{ "path": "file.html", "description": "detailed description of content and interactions specific to this project" }] }',
+        '{ "summary": "what you will build (be specific to the user request)", "filePlan": [{ "path": "file.html", "description": "detailed description of content, visual design, and interactions specific to this project" }] }',
         "",
         "Planning rules:",
         "- Only include files from the allowed list.",
         "- Do not return file contents yet, only the detailed plan.",
         "- Read the issue body and AGENT.md to understand what specific app is being built.",
-        "- For index.html: plan the specific page described by the user — with relevant sections, content, and features.",
-        "- For styles.css: plan design that matches the project theme and visual style described.",
-        "- For script.js: plan interactivity specific to this app — not generic nav toggle only.",
-        "- The description for each file should be 3-5 sentences explaining exactly what to build for THIS specific project.",
+        "- AGENT.md contains a full Design System section with CSS pattern examples — STUDY IT and use those patterns.",
+        "- For each HTML page: plan specific sections with detailed visual descriptions (hero gradient, glass cards, animated grids, etc.).",
+        "- For styles.css: plan a visually striking design using the design tokens from :root — describe specific effects (glassmorphism nav, gradient orbs, hover elevations, staggered reveals).",
+        "- For script.js: plan scroll-triggered reveal animations, smooth scrolling, mobile menu animation, active nav tracking, and any app-specific interactions.",
+        "- The description for each file should be 5-8 sentences with SPECIFIC visual and interaction details.",
         "- Do not include markdown fences in your response.",
       ].join("\\n"),
     },
@@ -553,27 +754,35 @@ async function main() {
       {
         role: "system",
         content: [
-          "You are an elite front-end developer who writes production-quality code.",
+          "You are an elite front-end developer who builds websites with PREMIUM visual quality — as polished as Stripe.com, Linear.app, or Vercel.com.",
           "Return ONLY the raw file content — no JSON, no markdown fences, no explanations.",
           "The output will be saved directly to disk as-is.",
           "",
-          "CRITICAL: Read the agent instructions and issue body to understand EXACTLY what app is being built.",
+          "CRITICAL: Read the AGENT.md carefully. It contains a Design System section with concrete CSS patterns.",
+          "You MUST use the design tokens from :root (--space-*, --text-*, --shadow-*, --radius-*, --accent-light, --border, --ease-*, --duration-*).",
+          "You MUST use the pre-defined animation keyframes (fadeUp, fadeIn, slideInLeft, scaleIn, shimmer, float, gradient).",
+          "You MUST use the .reveal class with IntersectionObserver for scroll-triggered animations.",
           "Build what the user described — with real, relevant content specific to this project.",
-          "Do NOT build a generic landing page. Build the SPECIFIC app/site described in the instructions.",
           "",
-          "Quality requirements:",
-          "- Write COMPLETE, polished code — not stubs or placeholders.",
-          "- Use real, relevant content that matches the project description (product names, prices, descriptions, etc.).",
-          "- HTML: semantic elements, accessibility attributes, responsive meta tags.",
-          "- CSS: custom properties for theming, mobile-first @media queries, smooth transitions,",
-          "  hover/focus/active states, subtle animations (@keyframes fade-in, slide-up),",
-          "  modern layout with CSS Grid/Flexbox, box-shadows for depth, clamp() for fluid type.",
-          "- JS: IntersectionObserver for scroll reveals, classList.toggle for state,",
-          "  smooth scrolling, mobile nav hamburger, dynamic content rendering,",
-          "  data-testid attributes on key sections, all code inside DOMContentLoaded.",
-          "- Visual: modern gradients, card hover elevation, striking hero section,",
-          "  real content (not lorem ipsum), polished typography and spacing.",
-          "- NO inline styles, NO alert(), NO console.log, NO placeholder text.",
+          "VISUAL QUALITY REQUIREMENTS (non-negotiable):",
+          "- Hero section: min-height 80vh, gradient background with decorative ::before orb, gradient text on h1,",
+          "  large CTA button with shadow and hover lift.",
+          "- Navigation: position fixed, backdrop-filter blur, border-bottom with var(--border).",
+          "- Cards/Features: glass-card effect (backdrop-filter blur, semi-transparent bg, subtle border),",
+          "  hover elevation (translateY(-4px) + shadow-xl), staggered animation delays.",
+          "- Buttons: rounded (radius-full), gradient background, shadow with accent color, hover scale+lift.",
+          "- Sections: generous padding (space-4xl), section-label in uppercase accent, max-width container.",
+          "- Typography: use clamp() vars, tight letter-spacing on headings (-0.03em), font-weight 800 for h1.",
+          "- Depth: every section should have visual depth — shadows, gradients, border, or blur. No flat designs.",
+          "- Footer: multi-column layout, subtle border-top, muted text color.",
+          "- Responsive: mobile-first, hamburger menu animates open/close, grid collapses gracefully.",
+          "",
+          "CODE QUALITY:",
+          "- Write COMPLETE code — every section fully implemented with real content.",
+          "- HTML: semantic elements, accessibility, Google Fonts Inter link, data-testid attributes.",
+          "- CSS: only use var() tokens, never hard-coded px/colors. Use Grid for layouts, Flexbox for components.",
+          "- JS: IntersectionObserver for .reveal elements, smooth scrolling, mobile nav toggle, active nav tracking.",
+          "- NO inline styles, NO alert(), NO console.log, NO placeholder text, NO lorem ipsum.",
         ].join("\\n"),
       },
       {
