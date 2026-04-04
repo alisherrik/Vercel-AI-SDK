@@ -121,11 +121,12 @@ async function runBuildPipeline(id: string): Promise<void> {
 
     if (!run.repo) {
       const repo = await github.createRepository(run.appSpec.appName);
+      // Persist the repo reference immediately so retries don't re-create it.
+      run = await patchRun(id, { repo });
       await github.configureRepositoryAutomation(repo);
-      await github.pushGeneratedApp(repo, run.generatedApp);
+      await github.pushGeneratedApp(repo, run.generatedApp!);
       await github.ensurePagesSite(repo);
       run = await patchRun(id, {
-        repo,
         status: "repo_provisioned",
       });
     }

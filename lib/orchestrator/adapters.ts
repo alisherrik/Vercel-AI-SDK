@@ -282,15 +282,33 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
   }
 
   override async pushGeneratedApp(repo: GitHubRepo, app: GeneratedApp): Promise<void> {
+    const owner = encodeURIComponent(repo.owner);
+    const name = encodeURIComponent(repo.name);
+
     for (const file of app.files) {
+      const payload: Record<string, string> = {
+        message: `chore: publish ${app.starterKind} starter`,
+        content: Buffer.from(file.content, "utf8").toString("base64"),
+        branch: repo.defaultBranch,
+      };
+
+      // If the file already exists, include its sha so the update succeeds.
+      try {
+        const existing = await this.request<{ sha: string }>(
+          "GET",
+          `/repos/${owner}/${name}/contents/${encodePath(file.path)}?ref=${encodeURIComponent(repo.defaultBranch)}`,
+        );
+        if (existing?.sha) {
+          payload.sha = existing.sha;
+        }
+      } catch {
+        // File doesn't exist yet — that's fine, create it.
+      }
+
       await this.request(
         "PUT",
-        `/repos/${encodeURIComponent(repo.owner)}/${encodeURIComponent(repo.name)}/contents/${encodePath(file.path)}`,
-        {
-          message: `chore: publish ${app.starterKind} starter`,
-          content: Buffer.from(file.content, "utf8").toString("base64"),
-          branch: repo.defaultBranch,
-        },
+        `/repos/${owner}/${name}/contents/${encodePath(file.path)}`,
+        payload,
       );
     }
   }
