@@ -1180,11 +1180,29 @@ jobs:
 
 function renderAgentInstructions(spec: AppSpec, agentProvider: AgentProvider): string {
   const agentName = agentProvider === "glm" ? "GLM-4" : "Claude";
+  const userDesc = spec.briefContext?.userDescription || "";
+  const projectContext = [
+    `## Project: ${spec.appName}`,
+    "",
+    userDesc ? `**What to build:** ${userDesc}` : "",
+    `**Primary goal:** ${spec.issueInputs.primaryGoal}`,
+    spec.briefContext?.mainProblem ? `**Problem being solved:** ${spec.briefContext.mainProblem}` : "",
+    spec.briefContext?.targetUsers?.length ? `**Target users:** ${spec.briefContext.targetUsers.join(", ")}` : "",
+    spec.briefContext?.visualStyleDirection?.length ? `**Visual style:** ${spec.briefContext.visualStyleDirection.join(", ")}` : "",
+    `**Pages:** ${spec.pages.join(", ")}`,
+    `**Sections:** ${spec.sections.join(", ")}`,
+    `**Features:** ${spec.features.join(", ")}`,
+    `**Copy tone:** ${spec.copyTone}`,
+    `**Theme:** background ${spec.theme.background}, surface ${spec.theme.surface}, accent ${spec.theme.accent}, text ${spec.theme.text}`,
+  ].filter(Boolean).join("\n");
 
   return `# ${spec.appName} — Agent Implementation Guide
 
 You are the **${agentName}** implementation agent for this repository.
 Follow the issue scope exactly and build production-quality interactive pages.
+Build EXACTLY what the user described — not a generic template.
+
+${projectContext}
 
 ## Core Rules
 - All pages must be **static client-side only** (GitHub Pages compatible).
@@ -1299,16 +1317,19 @@ async function main() {
       role: "system",
       content: [
         "You are a senior front-end architect who builds polished, interactive websites.",
+        "Read the AGENT.md instructions and issue body CAREFULLY — they describe EXACTLY what app to build.",
+        "Your job is to plan an implementation that matches the user's specific request, NOT a generic template.",
         "Analyze the issue and plan the implementation. Return ONLY a JSON object:",
-        '{ "summary": "what you will build", "filePlan": [{ "path": "file.html", "description": "detailed description of content and interactions" }] }',
+        '{ "summary": "what you will build (be specific to the user request)", "filePlan": [{ "path": "file.html", "description": "detailed description of content and interactions specific to this project" }] }',
         "",
         "Planning rules:",
         "- Only include files from the allowed list.",
         "- Do not return file contents yet, only the detailed plan.",
-        "- For index.html: plan a complete page with hero, features, metrics, CTA, footer.",
-        "- For styles.css: plan responsive design, CSS variables, animations, hover effects.",
-        "- For script.js: plan real interactivity — nav toggle, scroll animations, dynamic content.",
-        "- The description for each file should be 2-3 sentences explaining what to build.",
+        "- Read the issue body and AGENT.md to understand what specific app is being built.",
+        "- For index.html: plan the specific page described by the user — with relevant sections, content, and features.",
+        "- For styles.css: plan design that matches the project theme and visual style described.",
+        "- For script.js: plan interactivity specific to this app — not generic nav toggle only.",
+        "- The description for each file should be 3-5 sentences explaining exactly what to build for THIS specific project.",
         "- Do not include markdown fences in your response.",
       ].join("\\n"),
     },
@@ -1347,8 +1368,13 @@ async function main() {
           "Return ONLY the raw file content — no JSON, no markdown fences, no explanations.",
           "The output will be saved directly to disk as-is.",
           "",
+          "CRITICAL: Read the agent instructions and issue body to understand EXACTLY what app is being built.",
+          "Build what the user described — with real, relevant content specific to this project.",
+          "Do NOT build a generic landing page. Build the SPECIFIC app/site described in the instructions.",
+          "",
           "Quality requirements:",
           "- Write COMPLETE, polished code — not stubs or placeholders.",
+          "- Use real, relevant content that matches the project description (product names, prices, descriptions, etc.).",
           "- HTML: semantic elements, accessibility attributes, responsive meta tags.",
           "- CSS: custom properties for theming, mobile-first @media queries, smooth transitions,",
           "  hover/focus/active states, subtle animations (@keyframes fade-in, slide-up),",

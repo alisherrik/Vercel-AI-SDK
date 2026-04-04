@@ -4,11 +4,31 @@ import type { AppSpec, IssuePlan } from "@/lib/planner/schemas";
 type AgentProvider = "copilot" | "claude" | "glm";
 
 export function createIssueBacklog(spec: AppSpec, agentProvider: AgentProvider): IssuePlan[] {
+  const userDesc = spec.briefContext?.userDescription || "";
+  const goalText = spec.issueInputs.primaryGoal.toLowerCase();
+  const summaryParts = [
+    `Implement the full ${spec.appName} site end-to-end.`,
+    userDesc
+      ? `\n\nUser request:\n${userDesc}`
+      : "",
+    `\n\nCore objective: ${goalText}.`,
+    `\nDeliver page structure, navigation, hero, feature sections, all interactions, styling, responsive design, real content, and deployment readiness.`,
+    spec.briefContext?.mainProblem
+      ? `\nProblem being solved: ${spec.briefContext.mainProblem}`
+      : "",
+    spec.briefContext?.targetUsers?.length
+      ? `\nTarget audience: ${spec.briefContext.targetUsers.join(", ")}`
+      : "",
+    spec.briefContext?.visualStyleDirection?.length
+      ? `\nVisual style: ${spec.briefContext.visualStyleDirection.join(", ")}`
+      : "",
+  ];
+
   return [
     {
       id: `${slugify(spec.appName)}-full-build-1`,
       title: `Build complete ${spec.appName} site`,
-      summary: `Implement the full ${spec.appName} site end-to-end: page structure, navigation, hero, feature sections, all interactions, styling, responsive design, content, and deployment readiness. Focus on ${spec.issueInputs.primaryGoal.toLowerCase()}.`,
+      summary: summaryParts.filter(Boolean).join(""),
       githubIssueNumber: null,
       allowedFiles: allowedFilesForStarter(spec.starterKind, agentProvider),
       acceptanceCriteria: [

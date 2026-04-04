@@ -20,6 +20,7 @@ export const discoveryFieldSchema = z.enum(discoveryFields);
 
 const briefFieldShape = {
   title: z.string().trim().max(80),
+  description: z.string().trim().max(2000),
   language: z.string().trim().max(40),
   appGoal: z.string().trim().max(320),
   targetUsers: briefList,
@@ -36,6 +37,7 @@ const briefFieldShape = {
 
 export const projectBriefSchema = z.object({
   title: briefFieldShape.title.default(""),
+  description: briefFieldShape.description.default(""),
   language: briefFieldShape.language.default("English"),
   appGoal: briefFieldShape.appGoal.default(""),
   targetUsers: briefFieldShape.targetUsers.default([]),
@@ -52,6 +54,7 @@ export const projectBriefSchema = z.object({
 
 export const projectBriefDeltaSchema = z.object({
   title: briefFieldShape.title.optional(),
+  description: briefFieldShape.description.optional(),
   language: briefFieldShape.language.optional(),
   appGoal: briefFieldShape.appGoal.optional(),
   targetUsers: briefFieldShape.targetUsers.optional(),
@@ -138,6 +141,7 @@ export const appSpecSchema = z.object({
     interactions: briefList.min(1),
   }),
   briefContext: z.object({
+    userDescription: z.string().max(2000).default(""),
     mainProblem: z.string().max(320).default(""),
     dataAndAuthNeeds: briefList.default([]),
     integrations: briefList.default([]),
@@ -145,6 +149,7 @@ export const appSpecSchema = z.object({
     targetUsers: briefList.default([]),
     platformExpectations: briefList.default([]),
   }).default({
+    userDescription: "",
     mainProblem: "",
     dataAndAuthNeeds: [],
     integrations: [],
@@ -168,7 +173,7 @@ export const generatedAppSchema = z.object({
 export const issuePlanSchema = z.object({
   id: nonEmptyString.max(80),
   title: nonEmptyString.max(120),
-  summary: nonEmptyString.max(500),
+  summary: nonEmptyString.max(2000),
   githubIssueNumber: z.number().int().positive().nullable().default(null),
   allowedFiles: z.array(nonEmptyString.max(160)).min(1).max(20),
   acceptanceCriteria: z.array(nonEmptyString.max(400)).min(1).max(12),

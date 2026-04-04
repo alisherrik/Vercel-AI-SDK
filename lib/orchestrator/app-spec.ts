@@ -33,6 +33,7 @@ export function createAppSpec(
   brief: ProjectBrief,
   messages: PromptMessage[],
 ): AppSpec {
+  const userDescription = brief.description?.trim() || "";
   const starterKind = inferStarterKind(brief);
   const appName =
     brief.title.trim() ||
@@ -66,6 +67,11 @@ export function createAppSpec(
     .reverse()
     .find((message) => message.role === "user")?.content;
 
+  const effectiveGoal =
+    brief.appGoal ||
+    userDescription ||
+    "Turn the product brief into an interactive production-ready web experience";
+
   return {
     appName,
     starterKind,
@@ -89,12 +95,13 @@ export function createAppSpec(
       "Deploy via GitHub Pages workflow",
     ],
     issueInputs: {
-      primaryGoal: brief.appGoal || "Turn the product brief into an interactive production-ready web experience",
+      primaryGoal: effectiveGoal,
       audience: fallbackList(brief.targetUsers, ["Internal stakeholders"]),
       coreScreens: fallbackList(brief.keyScreens, ["Home"]),
       interactions: fallbackList(interactions, ["Primary CTA flow"]),
     },
     briefContext: {
+      userDescription,
       mainProblem: brief.mainProblem || "",
       dataAndAuthNeeds: brief.dataAndAuthNeeds,
       integrations: brief.integrations,
@@ -108,6 +115,7 @@ export function createAppSpec(
 export function inferStarterKind(brief: ProjectBrief): StarterKind {
   const text = [
     brief.appGoal,
+    brief.description,
     brief.mainProblem,
     ...brief.mustHaveFeatures,
     ...brief.keyScreens,
