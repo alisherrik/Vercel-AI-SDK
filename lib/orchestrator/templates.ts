@@ -1198,7 +1198,8 @@ Follow the issue scope exactly.
 function renderGlmImplementationScript(): string {
   return `import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { dirname } from "node:path";
 
 const DEFAULT_MODEL = process.env.BIGMODEL_MODEL || "glm-4-plus";
 const DEFAULT_URL =
@@ -1234,6 +1235,98 @@ async function main() {
   );
 
   const agentInstructions = existsSync("AGENT.md") ? await readFile("AGENT.md", "utf8") : "";
+
+  // ── Step 1: Ask GLM for a plan (which files to update and a brief description) ──
+  const planResponse = await callGlm(apiKey, [
+    {
+      role: "system",
+      content: [
+        "You are a senior front-end implementation agent.",
+        "Analyze the issue and return ONLY a JSON object with this shape:",
+        '{ "summary": "what you will do", "filePlan": [{ "path": "file.html", "description": "what changes to make" }] }',
+        "Only include files from the allowed list.",
+        "Do not return file contents yet, only the plan.",
+        "Do not include markdown fences.",
+      ].join("\\n"),
+    },
+    {
+      role: "user",
+      content: buildUserPrompt(issue, comment, issueBody, agentInstructions, currentFiles),
+    },
+  ]);
+
+  const plan = parseModelJson(planResponse);
+
+  if (!Array.isArray(plan.filePlan) || plan.filePlan.length === 0) {
+    throw new Error("GLM did not return a file plan.");
+  }
+
+  const summary = typeof plan.summary === "string" ? plan.summary : "Implementation complete.";
+  console.log("Plan:", summary);
+  console.log("Files to update:", plan.filePlan.map((f) => f.path).join(", "));
+
+  // ── Step 2: Generate each file individually ──
+  for (const filePlan of plan.filePlan) {
+    if (!filePlan || typeof filePlan.path !== "string") continue;
+    if (!allowedFiles.includes(filePlan.path)) {
+      console.warn(\`Skipping disallowed file: \${filePlan.path}\`);
+      continue;
+    }
+
+    const existingContent = currentFiles.find((f) => f.path === filePlan.path)?.content || "";
+
+    console.log(\`Generating: \${filePlan.path}...\`);
+    const fileResponse = await callGlm(apiKey, [
+      {
+        role: "system",
+        content: [
+          "You are a senior front-end developer.",
+          "Return ONLY the complete file content. No JSON wrapping, no markdown fences, no explanations.",
+          "Return the raw file content exactly as it should be saved to disk.",
+          "Prioritize rich, interactive client-side pages.",
+        ].join("\\n"),
+      },
+      {
+        role: "user",
+        content: [
+          \`File: \${filePlan.path}\`,
+          \`Task: \${filePlan.description || plan.summary}\`,
+          "",
+          "Agent instructions:",
+          agentInstructions || "None.",
+          "",
+          "Issue body:",
+          issueBody,
+          "",
+          existingContent
+            ? \`Current file content:\\n\${existingContent}\`
+            : "This is a new file, create it from scratch.",
+        ].join("\\n"),
+      },
+    ]);
+
+    const dir = dirname(filePlan.path);
+    if (dir && dir !== ".") {
+      await mkdir(dir, { recursive: true });
+    }
+    await writeFile(filePlan.path, fileResponse, "utf8");
+    console.log(\`  Wrote: \${filePlan.path} (\${fileResponse.length} chars)\`);
+  }
+
+  const changedFiles = listChangedFiles();
+
+  if (changedFiles.length === 0) {
+    console.log("GLM-4 produced no file changes.");
+    await appendOutput("changed", "false");
+    await appendOutput("summary", summary);
+  } else {
+    console.log(\`Updated files: \${changedFiles.join(", ")}\`);
+    await appendOutput("changed", "true");
+    await appendOutput("summary", summary);
+  }
+}
+
+async function callGlm(apiKey, messages) {
   const response = await fetch(DEFAULT_URL, {
     method: "POST",
     headers: {
@@ -1245,42 +1338,7 @@ async function main() {
       stream: false,
       temperature: 0.2,
       max_tokens: 16384,
-      response_format: { type: "json_object" },
-      messages: [
-        {
-          role: "system",
-          content: [
-            "You are a senior front-end implementation agent working inside GitHub Actions.",
-            "Return ONLY valid JSON with this exact shape:",
-            '{ "summary": "short summary", "files": [{ "path": "file", "contentBase64": "base64 encoded full file contents" }] }',
-            "CRITICAL: You MUST base64-encode every file content and put it in contentBase64.",
-            "DO NOT use a \\\"content\\\" key with raw text. ALWAYS use contentBase64 with base64.",
-            "Only return files from the allowed list.",
-            "Every returned file must contain the full final file, not a diff.",
-            "Prioritize rich, interactive client-side pages instead of flat static brochure content.",
-            "Do not include markdown fences or commentary outside the JSON.",
-          ].join("\\n"),
-        },
-        {
-          role: "user",
-          content: [
-            \`Repository: \${process.env.GITHUB_REPOSITORY || ""}\`,
-            \`Issue #\${issue?.number || ""}: \${issue?.title || ""}\`,
-            "",
-            "Agent instructions:",
-            agentInstructions || "None provided.",
-            "",
-            "Kickoff comment:",
-            typeof comment?.body === "string" ? comment.body : "",
-            "",
-            "Issue body:",
-            issueBody,
-            "",
-            "Current allowed files:",
-            JSON.stringify(currentFiles, null, 2),
-          ].join("\\n"),
-        },
-      ],
+      messages,
     }),
   });
 
@@ -1290,45 +1348,26 @@ async function main() {
 
   const payload = await response.json();
   const rawContent = payload?.choices?.[0]?.message?.content;
-  const content = normalizeMessageContent(rawContent);
+  return normalizeMessageContent(rawContent);
+}
 
-  if (typeof content !== "string" || !content.trim()) {
-    throw new Error("BigModel returned an empty message.");
-  }
-
-  const result = parseModelJson(content);
-
-  if (!Array.isArray(result.files) || result.files.length === 0) {
-    throw new Error("BigModel did not return any files to update.");
-  }
-
-  for (const file of result.files) {
-    if (!file || typeof file.path !== "string") {
-      throw new Error("BigModel returned an invalid file payload.");
-    }
-
-    if (!allowedFiles.includes(file.path)) {
-      throw new Error(\`Model attempted to edit disallowed file: \${file.path}\`);
-    }
-
-    const nextContent = readFileContent(file);
-    await writeFile(file.path, nextContent, "utf8");
-  }
-
-  const changedFiles = listChangedFiles();
-
-  if (changedFiles.length === 0) {
-    console.log("GLM-4 produced no file changes.");
-    await appendOutput("changed", "false");
-    await appendOutput("summary", typeof result.summary === "string" ? result.summary : "No file changes were produced.");
-  } else {
-    console.log(\`Updated files: \${changedFiles.join(", ")}\`);
-    await appendOutput("changed", "true");
-    await appendOutput(
-      "summary",
-      typeof result.summary === "string" ? result.summary : \`Updated files: \${changedFiles.join(", ")}\`,
-    );
-  }
+function buildUserPrompt(issue, comment, issueBody, agentInstructions, currentFiles) {
+  return [
+    \`Repository: \${process.env.GITHUB_REPOSITORY || ""}\`,
+    \`Issue #\${issue?.number || ""}: \${issue?.title || ""}\`,
+    "",
+    "Agent instructions:",
+    agentInstructions || "None provided.",
+    "",
+    "Kickoff comment:",
+    typeof comment?.body === "string" ? comment.body : "",
+    "",
+    "Issue body:",
+    issueBody,
+    "",
+    "Allowed files:",
+    currentFiles.map((f) => \`- \${f.path}\`).join("\\n"),
+  ].join("\\n");
 }
 
 function parseBulletedSection(body, heading) {

@@ -51,12 +51,12 @@ describe("GLM generator templates", () => {
     expect(ciWorkflow?.content).toContain("name: Interactive UI CI");
     expect(ciWorkflow?.content).toContain("verify-interactive-ui");
 
-    expect(script?.content).toContain('response_format: { type: "json_object" }');
+    expect(script?.content).toContain("async function callGlm(apiKey, messages)");
     expect(script?.content).toContain("function normalizeMessageContent(content)");
     expect(script?.content).toContain("function extractFirstJsonObject(content)");
-    expect(script?.content).toContain("function readFileContent(file)");
+    expect(script?.content).toContain("function parseModelJson(content)");
     expect(script?.content).toContain('appendOutput("error", message)');
-    expect(script?.content).toContain('MUST base64-encode every file content');
+    expect(script?.content).toContain("Generating:");
     expect(script?.content).toContain("Prioritize rich, interactive client-side pages");
     expect(instructions?.content).toContain("Build interactive client-side pages");
   });
