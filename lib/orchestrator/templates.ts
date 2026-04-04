@@ -1114,7 +1114,6 @@ on:
 permissions:
   contents: write
   issues: write
-  workflows: write
 
 jobs:
   agent:

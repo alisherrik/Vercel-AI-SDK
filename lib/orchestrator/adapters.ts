@@ -282,17 +282,10 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
   }
 
   override async pushGeneratedApp(repo: GitHubRepo, app: GeneratedApp): Promise<void> {
-    const owner = encodeURIComponent(repo.owner);
-    const name = encodeURIComponent(repo.name);
-
-    // Push workflow files first so GitHub registers them before any trigger comments.
-    const workflowFiles = app.files.filter((f) => f.path.startsWith(".github/workflows/"));
-    const otherFiles = app.files.filter((f) => !f.path.startsWith(".github/workflows/"));
-
-    for (const file of [...workflowFiles, ...otherFiles]) {
+    for (const file of app.files) {
       await this.request(
         "PUT",
-        `/repos/${owner}/${name}/contents/${encodePath(file.path)}`,
+        `/repos/${encodeURIComponent(repo.owner)}/${encodeURIComponent(repo.name)}/contents/${encodePath(file.path)}`,
         {
           message: `chore: publish ${app.starterKind} starter`,
           content: Buffer.from(file.content, "utf8").toString("base64"),
