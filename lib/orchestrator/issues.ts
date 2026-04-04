@@ -1,4 +1,5 @@
 import { slugify } from "@/lib/planner/brief";
+import { pageToFilename } from "@/lib/orchestrator/templates";
 import type { AppSpec, IssuePlan } from "@/lib/planner/schemas";
 
 type AgentProvider = "copilot" | "claude" | "glm";
@@ -30,11 +31,12 @@ export function createIssueBacklog(spec: AppSpec, agentProvider: AgentProvider):
       title: `Build complete ${spec.appName} site`,
       summary: summaryParts.filter(Boolean).join(""),
       githubIssueNumber: null,
-      allowedFiles: allowedFilesForStarter(spec.starterKind, agentProvider),
+      allowedFiles: allowedFilesForStarter(spec, agentProvider),
       acceptanceCriteria: [
-        `Page structure with ${spec.pages.join(", ")} navigation in an interactive client-side shell.`,
-        `Hero section reflecting "${spec.issueInputs.primaryGoal}" with primary CTA above the fold.`,
-        `All sections implemented: ${spec.sections.join(", ")}.`,
+        `Multi-page site with ${spec.pages.length} pages: ${spec.pages.map((p) => `${p} (${pageToFilename(p)})`).join(", ")}.`,
+        `Every page links to styles.css and script.js, has primary-nav with links to all other pages.`,
+        `Home page hero section reflecting "${spec.issueInputs.primaryGoal}" with primary CTA above the fold.`,
+        `All sections implemented across pages: ${spec.sections.join(", ")}.`,
         `Interactive behaviors: ${spec.issueInputs.interactions.join(", ")}.`,
         `Responsive layout from mobile to desktop with touch-friendly controls.`,
         `Polished typography, spacing, hover states, and visual style for ${spec.issueInputs.audience.join(", ")}.`,
@@ -58,11 +60,12 @@ export function createIssueBacklog(spec: AppSpec, agentProvider: AgentProvider):
 }
 
 function allowedFilesForStarter(
-  starterKind: AppSpec["starterKind"],
+  spec: AppSpec,
   agentProvider: AgentProvider,
 ): string[] {
-  const common = [
-    "index.html",
+  const pageFiles = spec.pages.map((p) => pageToFilename(p));
+  return [
+    ...pageFiles,
     "styles.css",
     "script.js",
     ".nojekyll",
@@ -70,16 +73,6 @@ function allowedFilesForStarter(
     ".github/workflows/deploy-pages.yml",
     ...agentSupportFiles(agentProvider),
   ];
-
-  if (starterKind === "dashboard") {
-    return [...common, "assets/metrics.json"];
-  }
-
-  if (starterKind === "content") {
-    return [...common, "assets/articles.json"];
-  }
-
-  return common;
 }
 
 function agentSupportFiles(agentProvider: AgentProvider): string[] {

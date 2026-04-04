@@ -43,11 +43,13 @@ describe("GLM generator templates", () => {
     const script = app.files.find((file) => file.path === ".github/scripts/implement-with-glm.mjs");
     const instructions = app.files.find((file) => file.path === "AGENT.md");
     const ciWorkflow = app.files.find((file) => file.path === ".github/workflows/ci.yml");
+    const deployWorkflow = app.files.find((file) => file.path === ".github/workflows/deploy-pages.yml");
 
     expect(workflow?.content).toContain("continue-on-error: true");
     expect(workflow?.content).toContain("Post failure note");
     expect(workflow?.content).toContain("steps.implement.outcome != 'success'");
     expect(workflow?.content).toContain("Post no-change note");
+    expect(workflow?.content).toContain("BIGMODEL_MODEL: glm-5");
     expect(ciWorkflow?.content).toContain("name: Interactive UI CI");
     expect(ciWorkflow?.content).toContain("verify-interactive-ui");
 
@@ -60,6 +62,48 @@ describe("GLM generator templates", () => {
     expect(script?.content).toContain("IntersectionObserver for scroll reveals");
     expect(script?.content).toContain("INFRA_PATTERNS");
     expect(script?.content).toContain("Skipped infrastructure files:");
+    expect(script?.content).toContain('"glm-5"');
     expect(instructions?.content).toContain("Agent Implementation Guide");
+
+    // Deploy only after Implementation Agent completes
+    expect(deployWorkflow?.content).toContain('workflows: ["Implementation Agent"]');
+    expect(deployWorkflow?.content).toContain("workflow_run");
+  });
+
+  it("generates multi-page skeleton files", () => {
+    const app = renderStarterApp(spec, "glm");
+
+    const indexPage = app.files.find((file) => file.path === "index.html");
+    const featuresPage = app.files.find((file) => file.path === "features.html");
+    const pricingPage = app.files.find((file) => file.path === "pricing.html");
+    const styles = app.files.find((file) => file.path === "styles.css");
+    const script = app.files.find((file) => file.path === "script.js");
+
+    expect(indexPage).toBeDefined();
+    expect(featuresPage).toBeDefined();
+    expect(pricingPage).toBeDefined();
+    expect(styles).toBeDefined();
+    expect(script).toBeDefined();
+
+    // Each page should link to shared styles/script
+    expect(indexPage?.content).toContain('href="./styles.css"');
+    expect(indexPage?.content).toContain('src="./script.js"');
+    expect(featuresPage?.content).toContain('href="./styles.css"');
+    expect(pricingPage?.content).toContain('href="./styles.css"');
+
+    // Each page should have nav links to other pages
+    expect(indexPage?.content).toContain('href="./features.html"');
+    expect(indexPage?.content).toContain('href="./pricing.html"');
+    expect(featuresPage?.content).toContain('href="./index.html"');
+
+    // Pages should be skeletons (minimal), not pre-built content
+    expect(indexPage?.content).toContain("GLM will implement");
+    expect(indexPage?.content).toContain('data-testid="main-content"');
+
+    // CI should check all page files
+    const ciWorkflow = app.files.find((file) => file.path === ".github/workflows/ci.yml");
+    expect(ciWorkflow?.content).toContain("test -f index.html");
+    expect(ciWorkflow?.content).toContain("test -f features.html");
+    expect(ciWorkflow?.content).toContain("test -f pricing.html");
   });
 });
