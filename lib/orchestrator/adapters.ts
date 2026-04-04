@@ -605,15 +605,36 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
   private async createRepositoryWithFallback(
     payload: Record<string, unknown>,
   ): Promise<GitHubRepoResponse> {
+    const repoName = payload.name as string;
+
+    // Try org first, then user
+    const tryCreate = async (): Promise<GitHubRepoResponse> => {
+      try {
+        return await this.request<GitHubRepoResponse>(
+          "POST",
+          `/orgs/${encodeURIComponent(this.owner)}/repos`,
+          payload,
+        );
+      } catch {
+        return this.request<GitHubRepoResponse>("POST", "/user/repos", payload);
+      }
+    };
+
     try {
-      return await this.request<GitHubRepoResponse>(
-        "POST",
-        `/orgs/${encodeURIComponent(this.owner)}/repos`,
-        payload,
-      );
+      return await tryCreate();
     } catch (error) {
-      console.warn("[github-create-repo:fallback-user]", error);
-      return this.request<GitHubRepoResponse>("POST", "/user/repos", payload);
+      // If repo already exists (422), fetch and reuse it
+      const msg = error instanceof Error ? error.message : String(error);
+      if (msg.includes("422") && msg.includes("name already exists")) {
+        console.warn(
+          `[github-create-repo] "${repoName}" already exists under ${this.owner}, reusing it.`,
+        );
+        return this.request<GitHubRepoResponse>(
+          "GET",
+          `/repos/${encodeURIComponent(this.owner)}/${encodeURIComponent(repoName)}`,
+        );
+      }
+      throw error;
     }
   }
 
