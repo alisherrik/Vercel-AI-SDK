@@ -56,7 +56,7 @@ describe("GLM generator templates", () => {
     expect(script?.content).toContain("function extractFirstJsonObject(content)");
     expect(script?.content).toContain("function readFileContent(file)");
     expect(script?.content).toContain('appendOutput("error", message)');
-    expect(script?.content).toContain('Use contentBase64 for every file');
+    expect(script?.content).toContain('MUST base64-encode every file content');
     expect(script?.content).toContain("Prioritize rich, interactive client-side pages");
     expect(instructions?.content).toContain("Build interactive client-side pages");
   });

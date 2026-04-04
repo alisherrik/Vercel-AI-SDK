@@ -1244,19 +1244,21 @@ async function main() {
       model: DEFAULT_MODEL,
       stream: false,
       temperature: 0.2,
+      max_tokens: 16384,
       response_format: { type: "json_object" },
       messages: [
         {
           role: "system",
           content: [
             "You are a senior front-end implementation agent working inside GitHub Actions.",
-            "Return only JSON with this shape:",
+            "Return ONLY valid JSON with this exact shape:",
             '{ "summary": "short summary", "files": [{ "path": "file", "contentBase64": "base64 encoded full file contents" }] }',
+            "CRITICAL: You MUST base64-encode every file content and put it in contentBase64.",
+            "DO NOT use a \\\"content\\\" key with raw text. ALWAYS use contentBase64 with base64.",
             "Only return files from the allowed list.",
             "Every returned file must contain the full final file, not a diff.",
-            "Use contentBase64 for every file so multiline HTML, CSS, and JavaScript stay valid JSON.",
             "Prioritize rich, interactive client-side pages instead of flat static brochure content.",
-            "Do not include markdown fences or commentary.",
+            "Do not include markdown fences or commentary outside the JSON.",
           ].join("\\n"),
         },
         {
@@ -1389,8 +1391,17 @@ function parseModelJson(content) {
     } catch {}
   }
 
+  // Strategy 4: try to repair truncated JSON
+  const repaired = repairTruncatedJson(fixed || trimmed);
+  if (repaired) {
+    try {
+      return JSON.parse(repaired);
+    } catch {}
+  }
+
   console.error("=== JSON PARSE FAILED ===");
   console.error("First 500 chars:", content.slice(0, 500));
+  console.error("Last 200 chars:", content.slice(-200));
   throw new Error("Unable to parse JSON returned by BigModel.");
 }
 
@@ -1413,6 +1424,50 @@ function fixUnescapedStrings(text) {
 
 function removeTrailingCommas(text) {
   return text.replace(/,\\s*([}\\]])/g, "$1");
+}
+
+function repairTruncatedJson(text) {
+  // If the JSON is truncated mid-response, try to close open structures
+  let s = text.trim();
+  if (!s.startsWith("{")) return null;
+
+  // Close any open string
+  let inStr = false;
+  let esc = false;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (esc) { esc = false; continue; }
+    if (c === "\\\\" && inStr) { esc = true; continue; }
+    if (c === '"') { inStr = !inStr; }
+  }
+  if (inStr) {
+    s += '"';
+  }
+
+  // Count open braces and brackets, close them
+  let braces = 0;
+  let brackets = 0;
+  inStr = false;
+  esc = false;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (esc) { esc = false; continue; }
+    if (c === "\\\\" && inStr) { esc = true; continue; }
+    if (c === '"') { inStr = !inStr; continue; }
+    if (!inStr) {
+      if (c === "{") braces++;
+      if (c === "}") braces--;
+      if (c === "[") brackets++;
+      if (c === "]") brackets--;
+    }
+  }
+
+  // Remove any trailing comma before closing
+  s = s.replace(/,\\s*$/, "");
+  while (brackets > 0) { s += "]"; brackets--; }
+  while (braces > 0) { s += "}"; braces--; }
+
+  return s;
 }
 
 function normalizeMessageContent(content) {
