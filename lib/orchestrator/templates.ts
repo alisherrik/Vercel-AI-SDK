@@ -319,7 +319,7 @@ jobs:
         env:
           BIGMODEL_API_KEY: \${{ secrets.BIGMODEL_API_KEY }}
           BIGMODEL_BASE_URL: https://open.bigmodel.cn/api/paas/v4/chat/completions
-          BIGMODEL_MODEL: glm-5
+          BIGMODEL_MODEL: glm-4.5-air
           GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
         run: node .github/scripts/implement-with-glm.mjs
       - name: Commit implementation
@@ -328,7 +328,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "feat: implement issue #\${{ github.event.issue.number }} with GLM-5"
+          git commit -m "feat: implement issue #\${{ github.event.issue.number }} with GLM-4.5-Air"
           git pull --rebase origin \${{ github.event.repository.default_branch }}
           git push origin HEAD:\${{ github.event.repository.default_branch }}
       - name: Post completion note
@@ -339,7 +339,7 @@ jobs:
         run: |
           gh issue comment "\${{ github.event.issue.number }}" \\
             --repo "\${{ github.repository }}" \\
-            --body "GLM-5 committed the requested implementation directly to the default branch.
+            --body "GLM-4.5-Air committed the requested implementation directly to the default branch.
 
           Summary: \$GLM_SUMMARY"
       - name: Post no-change note
@@ -350,7 +350,7 @@ jobs:
         run: |
           gh issue comment "\${{ github.event.issue.number }}" \\
             --repo "\${{ github.repository }}" \\
-            --body "GLM-5 reviewed the issue but did not produce file changes.
+            --body "GLM-4.5-Air reviewed the issue but did not produce file changes.
 
           Summary: \$GLM_SUMMARY"
       - name: Post failure note
@@ -361,14 +361,14 @@ jobs:
         run: |
           gh issue comment "\${{ github.event.issue.number }}" \\
             --repo "\${{ github.repository }}" \\
-            --body "GLM-5 could not complete the implementation run.
+            --body "GLM-4.5-Air could not complete the implementation run.
 
           Error: \$GLM_ERROR"
 `;
 }
 
 function renderAgentInstructions(spec: AppSpec, agentProvider: AgentProvider): string {
-  const agentName = agentProvider === "glm" ? "GLM-5" : "Claude";
+  const agentName = agentProvider === "glm" ? "GLM-4.5-Air" : "Claude";
   const userDesc = spec.briefContext?.userDescription || "";
   const projectContext = [
     `## Project: ${spec.appName}`,
@@ -448,7 +448,7 @@ import { existsSync } from "node:fs";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 
-const DEFAULT_MODEL = process.env.BIGMODEL_MODEL || "glm-5";
+const DEFAULT_MODEL = process.env.BIGMODEL_MODEL || "glm-4.5-air";
 const DEFAULT_URL =
   process.env.BIGMODEL_BASE_URL || "https://open.bigmodel.cn/api/paas/v4/chat/completions";
 
@@ -606,7 +606,7 @@ async function main() {
   const changedFiles = listChangedFiles();
 
   if (changedFiles.length === 0) {
-    console.log("GLM-5 produced no file changes.");
+    console.log("GLM-4.5-Air produced no file changes.");
     await appendOutput("changed", "false");
     await appendOutput("summary", summary);
   } else {

@@ -49,7 +49,7 @@ describe("GLM generator templates", () => {
     expect(workflow?.content).toContain("Post failure note");
     expect(workflow?.content).toContain("steps.implement.outcome != 'success'");
     expect(workflow?.content).toContain("Post no-change note");
-    expect(workflow?.content).toContain("BIGMODEL_MODEL: glm-5");
+    expect(workflow?.content).toContain("BIGMODEL_MODEL: glm-4.5-air");
     expect(ciWorkflow?.content).toContain("name: Interactive UI CI");
     expect(ciWorkflow?.content).toContain("verify-interactive-ui");
 
@@ -62,7 +62,7 @@ describe("GLM generator templates", () => {
     expect(script?.content).toContain("IntersectionObserver for scroll reveals");
     expect(script?.content).toContain("INFRA_PATTERNS");
     expect(script?.content).toContain("Skipped infrastructure files:");
-    expect(script?.content).toContain('"glm-5"');
+    expect(script?.content).toContain('"glm-4.5-air"');
     expect(instructions?.content).toContain("Agent Implementation Guide");
 
     // Deploy only after Implementation Agent completes
