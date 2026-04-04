@@ -51,27 +51,6 @@ type GitHubActionsSecretKeyResponse = {
   key_id: string;
 };
 
-type GitHubRefResponse = {
-  object: { sha: string };
-};
-
-type GitHubCommitResponse = {
-  sha: string;
-  tree: { sha: string };
-};
-
-type GitHubBlobResponse = {
-  sha: string;
-};
-
-type GitHubTreeResponse = {
-  sha: string;
-};
-
-type GitHubNewCommitResponse = {
-  sha: string;
-};
-
 type GitHubWorkflowRunsResponse = {
   workflow_runs?: Array<{
     id: number;
@@ -305,106 +284,21 @@ class GitHubRestAdapter extends FakeGitHubAdapter {
   override async pushGeneratedApp(repo: GitHubRepo, app: GeneratedApp): Promise<void> {
     const owner = encodeURIComponent(repo.owner);
     const name = encodeURIComponent(repo.name);
-    const branch = repo.defaultBranch;
 
-    // 1. Get the current HEAD ref
-    let baseSha: string;
-    let baseTreeSha: string;
+    // Push workflow files first so GitHub registers them before any trigger comments.
+    const workflowFiles = app.files.filter((f) => f.path.startsWith(".github/workflows/"));
+    const otherFiles = app.files.filter((f) => !f.path.startsWith(".github/workflows/"));
 
-    try {
-      const ref = await this.request<GitHubRefResponse>(
-        "GET",
-        `/repos/${owner}/${name}/git/ref/heads/${encodeURIComponent(branch)}`,
-      );
-      baseSha = ref.object.sha;
-
-      const commit = await this.request<GitHubCommitResponse>(
-        "GET",
-        `/repos/${owner}/${name}/git/commits/${baseSha}`,
-      );
-      baseTreeSha = commit.tree.sha;
-    } catch {
-      // Empty repo — no base commit yet; create from scratch
-      baseSha = "";
-      baseTreeSha = "";
-    }
-
-    // 2. Create blobs for all files
-    const treeItems: Array<{
-      path: string;
-      mode: "100644";
-      type: "blob";
-      sha: string;
-    }> = [];
-
-    for (const file of app.files) {
-      const blob = await this.request<GitHubBlobResponse>(
-        "POST",
-        `/repos/${owner}/${name}/git/blobs`,
+    for (const file of [...workflowFiles, ...otherFiles]) {
+      await this.request(
+        "PUT",
+        `/repos/${owner}/${name}/contents/${encodePath(file.path)}`,
         {
+          message: `chore: publish ${app.starterKind} starter`,
           content: Buffer.from(file.content, "utf8").toString("base64"),
-          encoding: "base64",
+          branch: repo.defaultBranch,
         },
       );
-      treeItems.push({
-        path: file.path,
-        mode: "100644",
-        type: "blob",
-        sha: blob.sha,
-      });
-    }
-
-    // 3. Create a new tree
-    const treePayload: { tree: typeof treeItems; base_tree?: string } = {
-      tree: treeItems,
-    };
-
-    if (baseTreeSha) {
-      treePayload.base_tree = baseTreeSha;
-    }
-
-    const tree = await this.request<GitHubTreeResponse>(
-      "POST",
-      `/repos/${owner}/${name}/git/trees`,
-      treePayload,
-    );
-
-    // 4. Create a new commit
-    const commitPayload: { message: string; tree: string; parents?: string[] } = {
-      message: `chore: publish ${app.starterKind} starter`,
-      tree: tree.sha,
-    };
-
-    if (baseSha) {
-      commitPayload.parents = [baseSha];
-    }
-
-    const newCommit = await this.request<GitHubNewCommitResponse>(
-      "POST",
-      `/repos/${owner}/${name}/git/commits`,
-      commitPayload,
-    );
-
-    // 5. Update the branch ref (or create it)
-    if (baseSha) {
-      await this.request(
-        "PATCH",
-        `/repos/${owner}/${name}/git/refs/heads/${encodeURIComponent(branch)}`,
-        { sha: newCommit.sha, force: true },
-      );
-    } else {
-      await this.request(
-        "POST",
-        `/repos/${owner}/${name}/git/refs`,
-        { ref: `refs/heads/${branch}`, sha: newCommit.sha },
-      );
-    }
-
-    // 6. Wait for GitHub to register any new workflow files
-    const hasWorkflow = app.files.some((f) => f.path.startsWith(".github/workflows/"));
-    if (hasWorkflow) {
-      console.log("[push] Waiting 15s for GitHub to register workflow files…");
-      await new Promise((resolve) => setTimeout(resolve, 15_000));
     }
   }
 
