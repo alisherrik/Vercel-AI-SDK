@@ -82,9 +82,11 @@ export function createIssueBacklog(spec: AppSpec, agentProvider: AgentProvider):
       githubIssueNumber: null,
       allowedFiles: [
         filename,
-        "styles.css",
-        "script.js",
-        ...agentSupportFiles(agentProvider),
+        // Only the first page (home) owns shared assets to avoid merge
+        // conflicts when agents run in parallel.
+        ...(isHome
+          ? ["styles.css", "script.js", ...agentSupportFiles(agentProvider)]
+          : []),
       ],
       acceptanceCriteria,
       expectedDomTargets: domTargets,

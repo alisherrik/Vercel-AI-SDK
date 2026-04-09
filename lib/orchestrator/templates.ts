@@ -406,7 +406,12 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "feat: implement issue #\${{ github.event.issue.number }} with GLM-4.5-Air"
-          git pull --rebase origin \${{ github.event.repository.default_branch }}
+          # Try a normal rebase first; on conflict, fall back to accepting
+          # incoming changes so parallel page builds never block each other.
+          if ! git pull --rebase origin \${{ github.event.repository.default_branch }}; then
+            git rebase --abort 2>/dev/null || true
+            git pull --no-rebase -X theirs origin \${{ github.event.repository.default_branch }}
+          fi
           git push origin HEAD:\${{ github.event.repository.default_branch }}
       - name: Post completion note
         if: steps.implement.outcome == 'success' && steps.implement.outputs.changed == 'true'
