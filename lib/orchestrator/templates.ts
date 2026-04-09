@@ -447,6 +447,26 @@ jobs:
 function renderAgentInstructions(spec: AppSpec, agentProvider: AgentProvider): string {
   const agentName = agentProvider === "glm" ? "GLM-4.5-Air" : "Claude";
   const userDesc = spec.briefContext?.userDescription || "";
+  const glmHtmlPrototypeMode =
+    agentProvider === "glm"
+      ? `
+## GLM HTML Prototype Mode
+
+When you are generating an \`.html\` file, treat it like a premium standalone prototype page, even though this repo keeps shared CSS in \`styles.css\` and shared JavaScript in \`script.js\`.
+
+- Output ONLY raw HTML for HTML files. The first characters must be \`<!DOCTYPE html>\` and the file must end with \`</html>\`.
+- Keep \`<link rel="stylesheet" href="./styles.css">\` and \`<script src="./script.js"></script>\` intact.
+- Build a polished, real-feeling product page with meaningful copy. Never use lorem ipsum, "coming soon", or filler placeholders.
+- Each HTML page should include at least 5 meaningful sections. If the brief is thin, add sensible sections like social proof, FAQ, pricing, testimonials, timeline, or CTA banner.
+- Use lowercase hyphenated section ids and make navigation/CTA links point to real ids that exist in the page.
+- The first/main page should include a bold hero section with a clear headline and primary call to action. Secondary pages should still open with a strong intro block.
+- Use realistic domain-appropriate placeholder content: names, pricing, headlines, descriptions, FAQs, and testimonials that match the product category.
+- For photos or mock imagery, use varied \`https://picsum.photos/seed/{unique-name}/{width}/{height}\` URLs. For icons, use inline SVG or Unicode only.
+- Include at least one expandable or modal-style detail surface whenever the product brief suggests details, contact, booking, pricing, or feature drill-downs.
+- JavaScript hooks must be real: every selector used by \`script.js\` should correspond to elements that exist in the HTML.
+- Be careful with JavaScript strings: escape apostrophes inside single-quoted strings as \`\\'\`, and never use smart quotes.
+`
+      : "";
   const projectContext = [
     `## Project: ${spec.appName}`,
     "",
@@ -475,6 +495,8 @@ ${projectContext}
 - Use **only** HTML, CSS, and vanilla JavaScript. No frameworks, no build tools, no npm.
 - Commit finished work directly to the default branch.
 - Do not introduce server runtimes, backend APIs, databases, or secrets.
+
+${glmHtmlPrototypeMode}
 
 ## Design System
 
@@ -783,6 +805,18 @@ async function main() {
           "- CSS: only use var() tokens, never hard-coded px/colors. Use Grid for layouts, Flexbox for components.",
           "- JS: IntersectionObserver for .reveal elements, smooth scrolling, mobile nav toggle, active nav tracking.",
           "- NO inline styles, NO alert(), NO console.log, NO placeholder text, NO lorem ipsum.",
+          "",
+          "HTML PROTOTYPE RULES (apply whenever the target file is an .html file):",
+          "- Output ONLY raw HTML. The first characters must be <!DOCTYPE html> and the file must end with </html>.",
+          "- Keep the shared stylesheet and script references intact: ./styles.css and ./script.js.",
+          "- Build at least 5 meaningful sections with realistic domain-specific copy, even if the brief is sparse.",
+          "- Use lowercase hyphenated ids for sections and ensure every anchor target actually exists.",
+          "- Include a strong hero or intro block, clear calls to action, social proof or trust-building content, and a closing CTA.",
+          "- Use https://picsum.photos/seed/{unique-name}/{width}/{height} for non-icon imagery when photos help.",
+          "- Include a modal, expandable detail, FAQ accordion, or similar surface when the page content supports it.",
+          "- Never use lorem ipsum, 'coming soon', or generic placeholder labels.",
+          "- Make sure every DOM selector that JavaScript depends on exists in the HTML.",
+          "- If you write single-quoted JavaScript strings, escape apostrophes as \\' to avoid broken scripts.",
         ].join("\\n"),
       },
       {

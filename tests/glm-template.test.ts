@@ -64,6 +64,10 @@ describe("GLM generator templates", () => {
     expect(script?.content).toContain("Skipped infrastructure files:");
     expect(script?.content).toContain('"glm-4.5-air"');
     expect(instructions?.content).toContain("Agent Implementation Guide");
+    expect(script?.content).toContain("HTML PROTOTYPE RULES");
+    expect(script?.content).toContain("The first characters must be <!DOCTYPE html>");
+    expect(instructions?.content).toContain("## GLM HTML Prototype Mode");
+    expect(instructions?.content).toContain("Each HTML page should include at least 5 meaningful sections");
 
     // Deploy only after Implementation Agent completes
     expect(deployWorkflow?.content).toContain('workflows: ["Implementation Agent"]');
