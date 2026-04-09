@@ -492,13 +492,21 @@ export function PlannerWorkspace() {
             </p>
           </div>
         </div>
-        <button
-          className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:border-stone-300 hover:bg-stone-50"
-          onClick={resetSession}
-          type="button"
-        >
-          New chat
-        </button>
+        <div className="flex items-center gap-2">
+          <a
+            href="/admin"
+            className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:border-stone-300 hover:bg-stone-50"
+          >
+            Admin
+          </a>
+          <button
+            className="rounded-lg border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:border-stone-300 hover:bg-stone-50"
+            onClick={resetSession}
+            type="button"
+          >
+            New chat
+          </button>
+        </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">

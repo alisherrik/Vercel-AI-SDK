@@ -158,30 +158,59 @@ async function runBuildPipeline(id: string): Promise<void> {
         status: "executing_issues",
       });
 
-      for (const issue of run.issues) {
-        if (issue.status !== "in_progress") {
-          continue;
-        }
+      // Process all in-progress issues in parallel.
+      const inProgressIssues = run.issues.filter((i) => i.status === "in_progress");
 
-        const result = await github.processIssue(run.repo!, issue);
+      const results = await Promise.allSettled(
+        inProgressIssues.map((issue) => github.processIssue(run!.repo!, issue)),
+      );
+
+      // Merge results back into the run one at a time to avoid stale reads.
+      for (let i = 0; i < inProgressIssues.length; i++) {
+        const issue = inProgressIssues[i];
+        const outcome = results[i];
         const latest = await getBuildRunOrThrow(id);
 
-        run = await patchRun(id, {
-          issues: latest.issues.map((currentIssue) =>
-            currentIssue.id === issue.id ? result.issue : currentIssue,
-          ),
-          issueExecutions: latest.issueExecutions.map((execution) =>
-            execution.issueId === issue.id ? result.execution : execution,
-          ),
-          pullRequests: result.pullRequest
-            ? [
-                ...latest.pullRequests.filter(
-                  (pullRequest) => pullRequest.issueId !== issue.id,
-                ),
-                result.pullRequest,
-              ]
-            : latest.pullRequests,
-        });
+        if (outcome.status === "fulfilled") {
+          const result = outcome.value;
+          run = await patchRun(id, {
+            issues: latest.issues.map((currentIssue) =>
+              currentIssue.id === issue.id ? result.issue : currentIssue,
+            ),
+            issueExecutions: latest.issueExecutions.map((execution) =>
+              execution.issueId === issue.id ? result.execution : execution,
+            ),
+            pullRequests: result.pullRequest
+              ? [
+                  ...latest.pullRequests.filter(
+                    (pullRequest) => pullRequest.issueId !== issue.id,
+                  ),
+                  result.pullRequest,
+                ]
+              : latest.pullRequests,
+          });
+        } else {
+          const errorMsg =
+            outcome.reason instanceof Error
+              ? outcome.reason.message
+              : "Agent execution failed.";
+          run = await patchRun(id, {
+            issues: latest.issues.map((currentIssue) =>
+              currentIssue.id === issue.id
+                ? { ...currentIssue, status: "failed" as const }
+                : currentIssue,
+            ),
+            issueExecutions: latest.issueExecutions.map((execution) =>
+              execution.issueId === issue.id
+                ? {
+                    ...execution,
+                    status: "failed" as const,
+                    log: [...execution.log, errorMsg],
+                  }
+                : execution,
+            ),
+          });
+        }
       }
     }
 

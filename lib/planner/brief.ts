@@ -45,6 +45,7 @@ export const INITIAL_SUGGESTIONS: SuggestedAnswer[] = [
 
 const emptyBrief: ProjectBrief = {
   title: "",
+  description: "",
   language: "English",
   appGoal: "",
   targetUsers: [],
@@ -119,6 +120,7 @@ export function mergeProjectBrief(
 ): ProjectBrief {
   return {
     title: mergeText(currentBrief.title, delta.title),
+    description: mergeText(currentBrief.description, delta.description),
     language: mergeText(currentBrief.language, delta.language) || "English",
     appGoal: mergeText(currentBrief.appGoal, delta.appGoal),
     targetUsers: mergeList(currentBrief.targetUsers, delta.targetUsers),
